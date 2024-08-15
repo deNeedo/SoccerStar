@@ -6,9 +6,36 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Scene1.unity
-    guid: 902d6a611664b9c4186eb7664f1c7e2e
-  - enabled: 1
-    path: Assets/Scenes/Scene2.unity
+    path: Assets/Scenes/00_Main.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/01_Profile.unity
+    guid: 45392b7daa3f4914ab86dfdb696fc1bb
+  - enabled: 1
+    path: Assets/Scenes/02_Food.unity
+    guid: e479fef70a2434349bd5dfd78a5e3f44
+  - enabled: 1
+    path: Assets/Scenes/03_Clothes.unity
+    guid: 8ba5fe62915109e42a05e44d19dcd642
+  - enabled: 1
+    path: Assets/Scenes/04_Club.unity
+    guid: c29b22da4f2145144aa5b09264999790
+  - enabled: 1
+    path: Assets/Scenes/05_Trening.unity
+    guid: b01d8eaf52a143342966cd7c1af6c4bb
+  - enabled: 1
+    path: Assets/Scenes/06_Work.unity
+    guid: 98a6cf7ed7a0da7418c97c2ef3804126
+  - enabled: 1
+    path: Assets/Scenes/07_Wellness.unity
+    guid: c971406157e346c438aec3c8aa4f82a7
+  - enabled: 1
+    path: Assets/Scenes/08_Messages.unity
+    guid: ad542b9a6d860094a914fb8ee112eb1e
+  - enabled: 1
+    path: Assets/Scenes/09_Rankings.unity
+    guid: d52e55b23bc51a54fbc29e26be723f5b
+  - enabled: 1
+    path: Assets/Scenes/10_Stars.unity
+    guid: 0f297458280bf624ca8eb39ed2d8019a
   m_configObjects: {}
