@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
 public class ChangeScreen : MonoBehaviour
 {
     public void ChangeScene(string sceneName)
