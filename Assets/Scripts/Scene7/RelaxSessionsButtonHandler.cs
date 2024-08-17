@@ -27,7 +27,7 @@ public class RelaxSessionsButtonHandler : MonoBehaviour
         if (PlayerStats.Instance != null)
         {
             int relaxSessions = PlayerStats.Instance.GetRelaxSessions();
-            buttonText.text = $"Available Sessions: {relaxSessions}/10";
+            buttonText.text = $"Sessions taken: {relaxSessions}/10";
         }
     }
 
