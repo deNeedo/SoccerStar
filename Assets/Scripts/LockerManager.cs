@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LockerManager : MonoBehaviour
-{
+public class LockerManager : MonoBehaviour {
     public Image lockerSlot1;
     public Image lockerSlot2;
     public Image lockerSlot3;
