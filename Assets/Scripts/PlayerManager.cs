@@ -18,6 +18,7 @@ public class PlayerManager : MonoBehaviour
     }
     private void Start() {
         // somehow fetch player info from server
+        
         Fitness = 10;
         // set all traits, items etc
     }
