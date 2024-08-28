@@ -2,6 +2,11 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance {get; private set;}
+    private string _player;
+    public string Player {
+        get {return _player;}
+        set {_player = value;}
+    }
     private int _fitness;
     public int Fitness {
         get {return _fitness;}
@@ -16,10 +21,11 @@ public class PlayerManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    private void Start() {
+    private void OnLoad() {
         // somehow fetch player info from server
-        
+        Player = NetworkManager.GetPlayer();
         Fitness = 10;
         // set all traits, items etc
+        Debug.Log(Player);
     }
 }

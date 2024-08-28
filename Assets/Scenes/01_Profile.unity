@@ -5516,6 +5516,8 @@ GameObject:
   - component: {fileID: 1570218949}
   - component: {fileID: 1570218948}
   - component: {fileID: 1570218950}
+  - component: {fileID: 1570218951}
+  - component: {fileID: 1570218952}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -5545,7 +5547,7 @@ Transform:
   m_GameObject: {fileID: 1570218947}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1121.032, y: 913.7519, z: -6.2210164}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5567,6 +5569,30 @@ MonoBehaviour:
   lockerSlot2: {fileID: 980333615}
   lockerSlot3: {fileID: 828088518}
   lockerSlot4: {fileID: 1155136761}
+--- !u!114 &1570218951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1570218947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64b38ee3989347947a2c79c42098d070, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1570218952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1570218947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d1e70444ad160408146d396be5492e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1571414909
 GameObject:
   m_ObjectHideFlags: 0

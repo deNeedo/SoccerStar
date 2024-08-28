@@ -7,6 +7,7 @@ public class NetworkManager : MonoBehaviour
 {
     private static TcpClient client;
     private static NetworkStream stream;
+    public static string currentPlayer = null;
     private static bool Connect()
     {
         try
@@ -26,6 +27,7 @@ public class NetworkManager : MonoBehaviour
         bool flag = NetworkManager.Connect();
         if (flag == true)
         {
+            currentPlayer = username;
             string message = "LOGIN " + username + " " + password + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
             NetworkManager.stream.Write(data, 0, data.Length);
@@ -40,6 +42,11 @@ public class NetworkManager : MonoBehaviour
             byte[] data = Encoding.UTF8.GetBytes(message);
             NetworkManager.stream.Write(data, 0, data.Length);
         }
+    }
+    public static string GetPlayer() {return currentPlayer;}
+    public static void FetchStats(string player)
+    {
+
     }
     void Update()
     {
@@ -57,6 +64,10 @@ public class NetworkManager : MonoBehaviour
             else if (message.Contains("0") && currentScene.name == "00_Register")
             {
                 ChangeScreen.ChangeScene("00_Login");
+            }
+            else if (message.Contains("1") && currentScene.name == "00_Login")
+            {
+                currentPlayer = null;
             }
         }
     }
