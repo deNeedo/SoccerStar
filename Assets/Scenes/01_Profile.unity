@@ -280,8 +280,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1570218953}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -582,8 +582,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1570218953}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -787,8 +787,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1570218953}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -887,7 +887,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.5882353, b: 0, a: 0.98039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -924,7 +924,6 @@ GameObject:
   - component: {fileID: 328072502}
   - component: {fileID: 328072501}
   - component: {fileID: 328072500}
-  - component: {fileID: 328072504}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1021,18 +1020,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &328072504
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 328072499}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bf905f26b48e6d4b8371c19b29f1ea6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &331735297
 GameObject:
   m_ObjectHideFlags: 0
@@ -1377,8 +1364,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1570218953}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -1510,8 +1497,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1570218953}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -2309,7 +2296,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.6, b: 0, a: 1}
+  m_Color: {r: 0, g: 0.5882353, b: 0, a: 0.98039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2384,7 +2371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.5882353, b: 0, a: 0.98039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2788,8 +2775,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1570218953}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -3137,7 +3124,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 884142180}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 960, y: 540, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3464,8 +3451,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1570218953}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -4029,8 +4016,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1570218953}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -5518,6 +5505,8 @@ GameObject:
   - component: {fileID: 1570218950}
   - component: {fileID: 1570218951}
   - component: {fileID: 1570218952}
+  - component: {fileID: 1570218953}
+  - component: {fileID: 1570218954}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -5593,6 +5582,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1d1e70444ad160408146d396be5492e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1570218953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1570218947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7cebdf319d6dc14fa5c643305c8ef72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1570218954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1570218947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dfea448aed8061468a539f6e9e6b9da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider0: {fileID: 676232128}
+  slider1: {fileID: 470043622}
+  slider2: {fileID: 86269770}
 --- !u!1 &1571414909
 GameObject:
   m_ObjectHideFlags: 0
@@ -6243,8 +6259,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1570218953}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -6455,8 +6471,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1570218953}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -6998,9 +7014,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
-        m_MethodName: Exit
+      - m_Target: {fileID: 1570218953}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: Logout
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

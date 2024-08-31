@@ -205,8 +205,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1784257667}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 778724189}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: Exit
         m_Mode: 1
         m_Arguments:
@@ -942,6 +942,7 @@ GameObject:
   - component: {fileID: 778724185}
   - component: {fileID: 778724188}
   - component: {fileID: 778724187}
+  - component: {fileID: 778724189}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -990,6 +991,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usernameField: {fileID: 154830663}
   passwordField: {fileID: 348242031}
+--- !u!114 &778724189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 778724183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7cebdf319d6dc14fa5c643305c8ef72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &910449488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1357,8 +1370,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1390407493}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5406.2397, y: 1116.8782, z: -45.40198}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1455,7 +1468,6 @@ GameObject:
   - component: {fileID: 1784257665}
   - component: {fileID: 1784257664}
   - component: {fileID: 1784257663}
-  - component: {fileID: 1784257667}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1551,18 +1563,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1784257667
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1784257662}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bf905f26b48e6d4b8371c19b29f1ea6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1970678807
 GameObject:
   m_ObjectHideFlags: 0
@@ -1779,8 +1779,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1784257667}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 778724189}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
