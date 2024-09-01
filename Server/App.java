@@ -1,0 +1,91 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Random;
+
+public class App {
+    private static final int PORT = 54429;
+    private static Random random = new Random();
+    public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Server started");
+            while (true) {
+                try (Socket clientSocket = serverSocket.accept()) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
+                    String message = in.readLine(); String[] data = message.split(" ");
+                    if (data[0].equals("LOGIN")) {
+                        System.out.println("Client: " + clientSocket.getInetAddress() + " | Login request");
+                        File database = new File("./userdata/");
+                        String[] dirs = database.list(); boolean flag = true;
+                        for (String dir : dirs) {
+                            if (dir.equals(data[1])) {
+                                File userdata = new File("./userdata/" + data[1] + "/cred");
+                                FileReader reader = new FileReader(userdata); int m; String temp = "";
+                                while ((m = reader.read()) != -1) {temp += (char) m;}
+                                if (data[2].equals(temp)) {out.println("LOGIN 0 " + data[1]); flag = false;}
+                                reader.close(); break;
+                            }
+                        }
+                        if (flag == true) {out.println("LOGIN 1");}
+                    } else if (data[0].equals("REGISTER")) {
+                        System.out.println("Client: " + clientSocket.getInetAddress() + " | Registration request");
+                        File database = new File("./userdata/");
+                        String[] dirs = database.list(); boolean flag = true;
+                        for (String dir : dirs) {
+                            if (dir.equals(data[1])) {out.println("REGISTER 1"); flag = false;}
+                        }
+                        if (flag == true) {
+                            File userdata = new File("./userdata/" + data[1]); userdata.mkdirs();
+                            userdata = new File("./userdata/" + data[1] + "/cred"); userdata.createNewFile();
+                            FileWriter writer = new FileWriter(userdata);
+                            writer.write(data[2]); writer.close();
+                            userdata = new File("./userdata/" + data[1] + "/stat"); userdata.createNewFile();
+                            writer = new FileWriter(userdata);
+                            writer.write("10\t40\t20\t"); writer.close();
+                            userdata = new File("./userdata/" + data[1] + "/item"); userdata.createNewFile();
+                            out.println("REGISTER 0");
+                        }
+                    } else if (data[0].equals("FETCHSTATS")) {
+                        try {
+                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Stats fetch request");
+                            File userdata = new File("./userdata/" + data[1] + "/stat");
+                            FileReader reader = new FileReader(userdata); int m; String temp = "";
+                            while ((m = reader.read()) != -1) {temp += (char) m;}
+                            out.println("FETCHSTATS 0 " + temp);
+                            reader.close();
+                        }
+                        catch (Exception e) {out.println("FETCHSTATS 1");}
+                    } else if (data[0].equals("FETCHITEMS")) {
+                        try {
+                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Stats fetch request");
+                            File userdata = new File("./userdata/" + data[1] + "/item");
+                            FileReader reader = new FileReader(userdata); int m; String temp = "";
+                            while ((m = reader.read()) != -1) {temp += (char) m;}
+                            out.println("FETCHITEMS 0 " + temp);
+                            reader.close();
+                        }
+                        catch (Exception e) {out.println("FETCHITEMS 1");}
+                    } else if (data[0].equals("CREATEITEM")) {
+                        try {
+                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Item create request");
+                            String temp = "Item_"; for (int m = 0; m < 3; m++) {temp += App.random.nextInt(10);}
+                            temp += "\t" + App.random.nextInt(3) + "," + (App.random.nextInt(9) + 1);
+                            out.println("CREATEITEM 0 " + temp);
+                        }
+                        catch (Exception e) {out.println("CREATEITEM 1");}
+                    }
+                    clientSocket.close();
+                }
+                catch (Exception e) {System.err.println("Client handling error: " + e.getLocalizedMessage());}
+            }
+        }
+        catch (Exception e) {System.err.println("Server error: " + e.getLocalizedMessage());}
+    }
+}
