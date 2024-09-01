@@ -4,6 +4,11 @@ public class PlayerManager : MonoBehaviour {
     private static int trait0 = 0;
     private static int trait1 = 0;
     private static int trait2 = 0;
+
+    private static int endurance;
+    private static int relaxSessions;
+    private static int stars;
+
     public static void Set(string username) {
         PlayerManager.username = username;
         Debug.Log("Set to: " + username);
@@ -23,6 +28,18 @@ public class PlayerManager : MonoBehaviour {
                 Debug.Log("Trait2 set to: " + value);
                 break;
         }
+    }
+    public static void SetStars(int stars) {
+        PlayerManager.stars = stars;
+        Debug.Log("Set stars to: " + stars);
+    }
+    public static void SetEndurance(int endurance) {
+        PlayerManager.endurance = endurance;
+        Debug.Log("Set endurance to: " + endurance);
+    }
+    public static void SetSessions(int relaxSessions) {
+        PlayerManager.relaxSessions = relaxSessions;
+        Debug.Log("Set relaxSessions to: " + relaxSessions);
     }
     public static int Get(int trait) {
         switch (trait) {

@@ -48,21 +48,92 @@ public class App {
                             writer.write(data[2]); writer.close();
                             userdata = new File("./userdata/" + data[1] + "/stat"); userdata.createNewFile();
                             writer = new FileWriter(userdata);
-                            writer.write("10\t40\t20\t"); writer.close();
-                            userdata = new File("./userdata/" + data[1] + "/item"); userdata.createNewFile();
+                            writer.write("10\t40\t20"); writer.close();
+                            userdata = new File("./userdata/" + data[1] + "/item");
+                            userdata.createNewFile();
+
+                            userdata = new File("./userdata/" + data[1] + "/star");
+                            userdata.createNewFile();
+                            writer = new FileWriter(userdata);
+                            writer.write("10"); writer.close();
+                            userdata = new File("./userdata/" + data[1] + "/endu");
+                            userdata.createNewFile();
+                            writer = new FileWriter(userdata);
+                            writer.write("100"); writer.close();
+                            userdata = new File("./userdata/" + data[1] + "/sess");
+                            userdata.createNewFile();
+                            writer = new FileWriter(userdata);
+                            writer.write("0"); writer.close();
                             out.println("REGISTER 0");
                         }
-                    } else if (data[0].equals("FETCHSTATS")) {
+                    }
+                    else if (data[0].equals("FETCHSTARS")) {
+                        try {
+                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Stars fetch request");
+                            File userdata = new File("./userdata/" + data[1] + "/star");
+                            FileReader reader = new FileReader(userdata);
+                            int m;
+                            String temp = "";
+                            while ((m = reader.read()) != -1) {
+                                temp += (char) m;
+                            }
+                            out.println("FETCHSTARS 0 " + temp);
+                            reader.close();
+                        } catch (Exception e) {
+                            out.println("FETCHSTARS 1");
+                        }
+                    }
+                    else if (data[0].equals("FETCHENDURANCE")) {
+                        try {
+                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Endurance fetch request");
+                            File userdata = new File("./userdata/" + data[1] + "/endu");
+                            FileReader reader = new FileReader(userdata);
+                            int m;
+                            String temp = "";
+                            while ((m = reader.read()) != -1) {
+                                temp += (char) m;
+                            }
+                            out.println("FETCHENDURANCE 0 " + temp);
+                            reader.close();
+                        }
+                        catch (Exception e) {
+                            out.println("FETCHENDURANCE 1");
+                        }
+                    }
+                    else if (data[0].equals("FETCHSESSIONS")) {
+                        try {
+                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Sessions fetch request");
+                            File userdata = new File("./userdata/" + data[1] + "/sess");
+                            FileReader reader = new FileReader(userdata);
+                            int m;
+                            String temp = "";
+                            while ((m = reader.read()) != -1) {
+                                temp += (char) m;
+                            }
+                            out.println("FETCHSESSIONS 0 " + temp);
+                            reader.close();
+                        }
+                        catch (Exception e) {
+                            out.println("FETCHSESSIONS 1");
+                        }
+                    }
+                    else if (data[0].equals("FETCHSTATS")) {
                         try {
                             System.out.println("Client: " + clientSocket.getInetAddress() + " | Stats fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/stat");
-                            FileReader reader = new FileReader(userdata); int m; String temp = "";
-                            while ((m = reader.read()) != -1) {temp += (char) m;}
+                            FileReader reader = new FileReader(userdata);
+                            int m;
+                            String temp = "";
+                            while ((m = reader.read()) != -1) {
+                                temp += (char) m;
+                            }
                             out.println("FETCHSTATS 0 " + temp);
                             reader.close();
+                        } catch (Exception e) {
+                            out.println("FETCHSTATS 1");
                         }
-                        catch (Exception e) {out.println("FETCHSTATS 1");}
-                    } else if (data[0].equals("FETCHITEMS")) {
+                    }
+                    else if (data[0].equals("FETCHITEMS")) {
                         try {
                             System.out.println("Client: " + clientSocket.getInetAddress() + " | Stats fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/item");
