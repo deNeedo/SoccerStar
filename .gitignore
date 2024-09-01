@@ -75,3 +75,7 @@ crashlytics-build.properties
 logs
 userdata
 *.class
+
+# Config files
+*.config
+*.config.meta
