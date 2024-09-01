@@ -40,6 +40,9 @@ public class PlayerManager : MonoBehaviour {
                 break;
         }
     }
+    public static string Get() {
+        return username;
+    }
     public static void Reset() {
         PlayerManager.username = null;
         Debug.Log("Reset");
