@@ -22,7 +22,7 @@ public class NetworkManager : MonoBehaviour
         }
     }
     private static void ConnectInit() {
-        string path = Path.Combine(Application.dataPath, configFileName);
+        string path = Path.Combine(Application.streamingAssetsPath, configFileName);
         if (File.Exists(path)) {
             try {
                 XmlDocument xmlDoc = new XmlDocument(); xmlDoc.Load(path);
