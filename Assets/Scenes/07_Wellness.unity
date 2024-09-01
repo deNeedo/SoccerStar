@@ -205,8 +205,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1129316180}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -538,8 +538,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1129316180}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -671,8 +671,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1129316180}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -733,7 +733,6 @@ GameObject:
   - component: {fileID: 328072502}
   - component: {fileID: 328072501}
   - component: {fileID: 328072500}
-  - component: {fileID: 328072504}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1054,8 +1053,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1129316180}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -1187,8 +1186,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1129316180}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -1668,8 +1667,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1129316180}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -2096,8 +2095,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1129316180}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -2683,8 +2682,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1129316180}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -4144,8 +4143,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1129316180}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -4323,8 +4322,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
+      - m_Target: {fileID: 1129316180}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeScene
         m_Mode: 5
         m_Arguments:
@@ -4864,9 +4863,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 328072504}
-        m_TargetAssemblyTypeName: ChangeScreen, Assembly-CSharp
-        m_MethodName: Exit
+      - m_Target: {fileID: 1129316180}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: Logout
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5079,3 +5078,4 @@ SceneRoots:
   - {fileID: 1331180654}
   - {fileID: 884142184}
   - {fileID: 328072503}
+  - {fileID: 1129316181}
