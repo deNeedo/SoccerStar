@@ -45,16 +45,12 @@ public class PlayerManager : MonoBehaviour {
         switch (trait) {
             case 0:
                 return trait0;
-                break;
             case 1:
                 return trait1;
-                break;
             case 2:
                 return trait2;
-                break;
             default:
                 return 0;
-                break;
         }
     }
     public static string Get() {

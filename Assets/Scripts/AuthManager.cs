@@ -23,9 +23,9 @@ public class AuthManager : MonoBehaviour {
     }
     public void Validate() {
         if (username.Length >= 4 && username.Length <= 16 && password.Length >= 8) {
-            password = HashPassword((username + password));
-            if (GameManager.current_scene == "00_Login") {NetworkManager.Login(username, password);}
-            else if (GameManager.current_scene == "00_Register") {NetworkManager.Register(username, password);}            
+            string hash = HashPassword((username + password));
+            if (GameManager.current_scene == "00_Login") {NetworkManager.Login(username, hash);}
+            else if (GameManager.current_scene == "00_Register") {NetworkManager.Register(username, hash);}            
         } else {
             Debug.Log("Username needs to be 4 to 16 characters long");
             Debug.Log("Password needs to be 8 or more characters long");

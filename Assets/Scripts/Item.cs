@@ -13,7 +13,7 @@ public class Item {
         NetworkManager.GenerateItem(PlayerManager.Get());
     }
 
-    public string ToString() {
+    override public string ToString() {
         if (trait0 != 0) {
             return "name: " + this.name + " trait0: " + this.trait0;
         } else if (trait1 != 0) {

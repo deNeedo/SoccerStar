@@ -135,7 +135,7 @@ public class App {
                     }
                     else if (data[0].equals("FETCHITEMS")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Stats fetch request");
+                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Items fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/item");
                             FileReader reader = new FileReader(userdata); int m; String temp = "";
                             while ((m = reader.read()) != -1) {temp += (char) m;}
