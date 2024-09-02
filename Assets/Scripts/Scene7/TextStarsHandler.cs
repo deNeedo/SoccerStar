@@ -1,36 +1,30 @@
+// StarDisplayManager.cs
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TextStarsHandler : MonoBehaviour
+public class StarDisplayManager : MonoBehaviour
 {
-    [SerializeField] private Text starsText;
+    public Text starsText;
+
+    private void OnEnable()
+    {
+        // Subscribe to the event when the script is enabled
+        PlayerManager.OnStarsChanged.AddListener(UpdateStarsText);
+    }
+
+    private void OnDisable()
+    {
+        // Unsubscribe from the event when the script is disabled to avoid memory leaks
+        PlayerManager.OnStarsChanged.RemoveListener(UpdateStarsText);
+    }
 
     private void Start()
     {
-        if (starsText == null)
-        {
-            Debug.LogError("Stars Text is not assigned!");
-            return;
-        }
-
-        UpdateStarsText();
+        UpdateStarsText(PlayerManager.GetStars());
     }
 
-    private void Update()
+    private void UpdateStarsText(int stars)
     {
-        UpdateStarsText();
-    }
-
-    public void UpdateStarsText()
-    {
-        if (PlayerStats.Instance != null)
-        {
-            int stars = PlayerStats.Instance.GetStars();
-            starsText.text = "Stars: " + stars;
-        }
-        else
-        {
-            Debug.LogError("PlayerStats instance is not found!");
-        }
+        starsText.text = "Stars: " + stars.ToString();
     }
 }

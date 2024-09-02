@@ -7,6 +7,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class App {
@@ -59,11 +61,11 @@ public class App {
                             userdata = new File("./userdata/" + data[1] + "/endu");
                             userdata.createNewFile();
                             writer = new FileWriter(userdata);
-                            writer.write("100"); writer.close();
+                            writer.write("58"); writer.close();
                             userdata = new File("./userdata/" + data[1] + "/sess");
                             userdata.createNewFile();
                             writer = new FileWriter(userdata);
-                            writer.write("0"); writer.close();
+                            writer.write("10"); writer.close();
                             out.println("REGISTER 0");
                         }
                     }
@@ -146,11 +148,51 @@ public class App {
                     } else if (data[0].equals("CREATEITEM")) {
                         try {
                             System.out.println("Client: " + clientSocket.getInetAddress() + " | Item create request");
-                            String temp = "Item_"; for (int m = 0; m < 3; m++) {temp += App.random.nextInt(10);}
+                            String temp = "Item_";
+                            for (int m = 0; m < 3; m++) {
+                                temp += App.random.nextInt(10);
+                            }
                             temp += "\t" + App.random.nextInt(3) + "," + (App.random.nextInt(9) + 1);
                             out.println("CREATEITEM 0 " + temp);
+                        } catch (Exception e) {
+                            out.println("CREATEITEM 1");
                         }
-                        catch (Exception e) {out.println("CREATEITEM 1");}
+                    } else if (data[0].equals("UseRelax")) {
+                        try {
+                            System.out.println("Client: " + clientSocket.getInetAddress() + " | UseRelax request");
+                            String username = data[1];
+
+                            // Fetch current values
+                            int currentEndurance = Integer.parseInt(
+                                    new String(Files.readAllBytes(Paths.get("./userdata/" + username + "/endu"))).trim());
+                            int currentStars = Integer.parseInt(
+                                    new String(Files.readAllBytes(Paths.get("./userdata/" + username + "/star"))).trim());
+                            int currentSessions = Integer.parseInt(
+                                    new String(Files.readAllBytes(Paths.get("./userdata/" + username + "/sess"))).trim());
+
+                            if (currentStars > 0 && currentSessions > 0 && currentEndurance <= 80) {
+                                currentEndurance += 20;
+                                currentStars -= 1;
+                                currentSessions -= 1;
+
+                                try (FileWriter writer = new FileWriter("./userdata/" + username + "/endu")) {
+                                    writer.write(String.valueOf(currentEndurance));
+                                }
+                                try (FileWriter writer = new FileWriter("./userdata/" + username + "/star")) {
+                                    writer.write(String.valueOf(currentStars));
+                                }
+                                try (FileWriter writer = new FileWriter("./userdata/" + username + "/sess")) {
+                                    writer.write(String.valueOf(currentSessions));
+                                }
+
+                                out.println("UseRelax 0 " + currentEndurance + " " + currentStars + " " + currentSessions);
+                            } else {
+                                System.out.println("Not enough Stars or Sessions or too much Endurance");
+                                out.println("UseRelax 1");
+                            }
+                        } catch (Exception e) {
+                            out.println("UseRelax 1");
+                        }
                     }
                     clientSocket.close();
                 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 public class PlayerManager : MonoBehaviour {
     private static string username = null;
     private static int trait0 = 0;
@@ -8,6 +9,7 @@ public class PlayerManager : MonoBehaviour {
     private static int endurance;
     private static int relaxSessions;
     private static int stars;
+    public static UnityEvent<int> OnStarsChanged = new UnityEvent<int>();
 
     public static void Set(string username) {
         PlayerManager.username = username;
@@ -31,15 +33,26 @@ public class PlayerManager : MonoBehaviour {
     }
     public static void SetStars(int stars) {
         PlayerManager.stars = stars;
+        OnStarsChanged.Invoke(stars);
         Debug.Log("Set stars to: " + stars);
     }
+    public static int GetStars() {
+        return PlayerManager.stars;
+    }
+
     public static void SetEndurance(int endurance) {
         PlayerManager.endurance = endurance;
         Debug.Log("Set endurance to: " + endurance);
     }
+    public static int GetEndurance() {
+        return PlayerManager.endurance;
+    }
     public static void SetSessions(int relaxSessions) {
         PlayerManager.relaxSessions = relaxSessions;
         Debug.Log("Set relaxSessions to: " + relaxSessions);
+    }
+    public static int GetRelaxSessions() {
+        return relaxSessions;
     }
     public static int Get(int trait) {
         switch (trait) {

@@ -75,8 +75,9 @@ public class NetworkManager : MonoBehaviour
             NetworkManager.stream.Write(data, 0, data.Length);
             while (NetworkManager.server_response == null) {NetworkManager.ResponseCheck(); Thread.Sleep(10);}
             string[] temp = (NetworkManager.server_response).Split(' ');
+            Debug.Log("temp: " + temp[1]);
             NetworkManager.server_response = null;
-            if (temp[1] == "0") {
+            if (temp[1].Trim() == "0") { // Zmieniłem na Trim bo za chuja mi nie działało bez, nie mam pojęcia czemu
                 GameManager.ChangeScene("00_Login");
             }
         }
@@ -161,4 +162,44 @@ public class NetworkManager : MonoBehaviour
             }
         }
     }
+
+    public static bool UseRelaxSession(string username)
+    {
+        bool flag = NetworkManager.Connect();
+        if (flag == true) {
+            string message = "UseRelax " + username;
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            NetworkManager.stream.Write(data, 0, data.Length);
+
+            while (NetworkManager.server_response == null)
+            {
+                NetworkManager.ResponseCheck();
+                Thread.Sleep(10);
+            }
+
+            string[] response = NetworkManager.server_response.Split(' ');
+            NetworkManager.server_response = null;
+
+            if (response[1] == "0") {
+                int newEndurance = int.Parse(response[2]);
+                int newStars = int.Parse(response[3]);
+                int newSessions = int.Parse(response[4]);
+
+                PlayerManager.SetEndurance(newEndurance);
+                PlayerManager.SetStars(newStars);
+                PlayerManager.SetSessions(newSessions);
+
+                Debug.Log("Relax session used successfully. Endurance increased, and stars/sessions decreased.");
+                return true;
+            }
+            else
+            {
+                Debug.LogError("Failed to use relax session on the server.");
+                return false;
+            }
+        }
+        return false;
+    }
+
+
 }
