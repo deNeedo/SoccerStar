@@ -61,7 +61,7 @@ public class App {
                             userdata = new File("./userdata/" + data[1] + "/endu");
                             userdata.createNewFile();
                             writer = new FileWriter(userdata);
-                            writer.write("58"); writer.close();
+                            writer.write("58"); writer.close(); // default should be 100 // just for test purposes
                             userdata = new File("./userdata/" + data[1] + "/sess");
                             userdata.createNewFile();
                             writer = new FileWriter(userdata);
