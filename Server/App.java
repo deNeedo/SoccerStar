@@ -16,6 +16,7 @@ public class App {
     private static Random random = new Random();
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            new Thread(new NewDayDetector()).start();
             System.out.println("Server started");
             while (true) {
                 try (Socket clientSocket = serverSocket.accept()) {
