@@ -10,22 +10,22 @@ public class NetworkManager : MonoBehaviour
 {
     private static TcpClient client;
     private static NetworkStream stream;
-    private static string configFileName = "App.config";
+    private static readonly string configFileName = "App.config";
     private static string server_ip;
     private static int server_port;
     private static string server_response = null;
     private static void ResponseCheck() {
         if (stream != null && stream.DataAvailable) {
             byte[] receivedData = new byte[client.Available];
-            NetworkManager.stream.Read(receivedData, 0, receivedData.Length);
-            NetworkManager.server_response = Encoding.UTF8.GetString(receivedData);
+            stream.Read(receivedData, 0, receivedData.Length);
+            server_response = Encoding.UTF8.GetString(receivedData);
         }
     }
     private static void ConnectInit() {
         string path = Path.Combine(Application.streamingAssetsPath, configFileName);
         if (File.Exists(path)) {
             try {
-                XmlDocument xmlDoc = new XmlDocument(); xmlDoc.Load(path);
+                XmlDocument xmlDoc = new(); xmlDoc.Load(path);
                 XmlNodeList nodeList = xmlDoc.SelectNodes("/configuration/appSettings/add");
                 foreach (XmlNode node in nodeList) {
                     string key = node.Attributes["key"].Value;
@@ -38,9 +38,9 @@ public class NetworkManager : MonoBehaviour
     } 
     private static bool Connect() {
         try {
-            if (NetworkManager.server_ip == null) {NetworkManager.ConnectInit();}
-            NetworkManager.client = new TcpClient(server_ip, server_port);
-            NetworkManager.stream = client.GetStream();
+            if (server_ip == null) {ConnectInit();}
+            client = new TcpClient(server_ip, server_port);
+            stream = client.GetStream();
             return true;
         } catch (Exception e) {
             Debug.LogError("Socket error: " + e.Message);
@@ -48,49 +48,48 @@ public class NetworkManager : MonoBehaviour
         }
     }
     public static void Login(string username, string password) {
-        bool flag = NetworkManager.Connect();
+        bool flag = Connect();
         if (flag == true) {
             string message = "LOGIN " + username + " " + password + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
-            NetworkManager.stream.Write(data, 0, data.Length);
-            while (NetworkManager.server_response == null) {NetworkManager.ResponseCheck(); Thread.Sleep(10);}
-            string[] temp = (NetworkManager.server_response).Split(' ');
-            NetworkManager.server_response = null;
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            string[] temp = server_response.Split(' ');
+            server_response = null;
             if (temp[1] == "0") {
-                NetworkManager.Fetch(temp[2]);
-                NetworkManager.FetchStars(temp[2]);
-                NetworkManager.FetchEndurance(temp[2]);
-                NetworkManager.FetchSessions(temp[2]);
+                FetchTraits(temp[2]);
+                FetchStars(temp[2]);
+                FetchEndurance(temp[2]);
+                FetchSessions(temp[2]);
+                // FetchLockerItems(temp[2]);
                 PlayerManager.SetName(temp[2]);
-                ItemManager.Reset();
                 GameManager.ChangeScene("01_Profile");
             }
         }
     }
     public static void Register(string username, string password) {
-        bool flag = NetworkManager.Connect();
+        bool flag = Connect();
         if (flag == true) {
             string message = "REGISTER " + username + " " + password + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
-            NetworkManager.stream.Write(data, 0, data.Length);
-            while (NetworkManager.server_response == null) {NetworkManager.ResponseCheck(); Thread.Sleep(10);}
-            string[] temp = (NetworkManager.server_response).Split(' ');
-            Debug.Log("temp: " + temp[1]);
-            NetworkManager.server_response = null;
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            string[] temp = server_response.Split(' ');
+            server_response = null;
             if (temp[1].Trim() == "0") { // Zmieniłem na Trim bo za chuja mi nie działało bez, nie mam pojęcia czemu
                 GameManager.ChangeScene("00_Login");
             }
         }
     }
-    public static void Fetch(string username) {
-        bool flag = NetworkManager.Connect();
+    public static void FetchTraits(string username) {
+        bool flag = Connect();
         if (flag == true) {
             string message = "FETCHSTATS " + username + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
-            NetworkManager.stream.Write(data, 0, data.Length);
-            while (NetworkManager.server_response == null) {NetworkManager.ResponseCheck(); Thread.Sleep(10);}
-            string[] temp = (NetworkManager.server_response).Split(' ');
-            NetworkManager.server_response = null;
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            string[] temp = server_response.Split(' ');
+            server_response = null;
             if (temp[1] == "0") {
                 temp = temp[2].Split('\t');
                 PlayerManager.SetTrait(0, int.Parse(temp[0])); PlayerManager.SetTrait(1, int.Parse(temp[1])); PlayerManager.SetTrait(2, int.Parse(temp[2]));
@@ -98,87 +97,113 @@ public class NetworkManager : MonoBehaviour
         }
     }
     public static void FetchStars(string username) {
-        bool flag = NetworkManager.Connect();
+        bool flag = Connect();
         if (flag == true) {
             string message = "FETCHSTARS " + username + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
-            NetworkManager.stream.WriteAsync(data, 0, data.Length);
-            while (NetworkManager.server_response == null) {NetworkManager.ResponseCheck(); Thread.Sleep(10);}
-            string[] temp = (NetworkManager.server_response).Split(' ');
-            NetworkManager.server_response = null;
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            string[] temp = server_response.Split(' ');
+            server_response = null;
             if (temp[1] == "0") {
                 PlayerManager.SetStars(int.Parse(temp[2]));
             }
         }
     }
     public static void FetchEndurance(string username) {
-        bool flag = NetworkManager.Connect();
+        bool flag = Connect();
         if (flag == true) {
             string message = "FETCHENDURANCE " + username + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
-            NetworkManager.stream.WriteAsync(data, 0, data.Length);
-            while (NetworkManager.server_response == null) {NetworkManager.ResponseCheck(); Thread.Sleep(10);}
-            string[] temp = (NetworkManager.server_response).Split(' ');
-            NetworkManager.server_response = null;
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            string[] temp = server_response.Split(' ');
+            server_response = null;
             if (temp[1] == "0") {
                 PlayerManager.SetEndurance(int.Parse(temp[2]));
             }
         }
     }
     public static void FetchSessions(string username) {
-        bool flag = NetworkManager.Connect();
+        bool flag = Connect();
         if (flag == true) {
             string message = "FETCHSESSIONS " + username + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
-            NetworkManager.stream.WriteAsync(data, 0, data.Length);
-            while (NetworkManager.server_response == null) {NetworkManager.ResponseCheck(); Thread.Sleep(10);}
-            string[] temp = (NetworkManager.server_response).Split(' ');
-            NetworkManager.server_response = null;
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            string[] temp = server_response.Split(' ');
+            server_response = null;
             if (temp[1] == "0") {
                 PlayerManager.SetSessions(int.Parse(temp[2]));
             }
         }
     }
-    public static void GenerateItem(string username) {
-        bool flag = NetworkManager.Connect();
-        if (flag == true) {
-            string message = "CREATEITEM " + username + "\n";
+    public static Item GenerateFood(string username) {
+        if (Connect() == true) {
+            string message = "GENERATE_FOOD_ITEM " + username + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
-            NetworkManager.stream.Write(data, 0, data.Length);
-            while (NetworkManager.server_response == null) {NetworkManager.ResponseCheck(); Thread.Sleep(10);}
-            string[] temp = (NetworkManager.server_response).Split(' ');
-            NetworkManager.server_response = null;
-            temp = temp[2].Split('\t');
-            string name = temp[0]; int trait = int.Parse(temp[1].Split(',')[0]); int value = int.Parse(temp[1].Split(',')[1]);
-            if (trait == 0) {
-                ItemManager.locker[0] = new Item(name, value, 0 , 0);
-            } else if (trait == 1) {
-                ItemManager.locker[0] = new Item(name, 0, value , 0);
-            } else if (trait == 2) {
-                ItemManager.locker[0] = new Item(name, 0, 0 , value);
-            }
-            for (int m = 0; m < ItemManager.locker.Length; m++) {
-                if (ItemManager.locker[m] != null) {Debug.Log("Locker item " + m + ": " + ItemManager.locker[m].ToString());}
-            }
-        }
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            message = server_response.Split(' ')[2]; server_response = null;
+            return new();
+            // string name = temp[0]; int trait = int.Parse(temp[1].Split(',')[0]); int value = int.Parse(temp[1].Split(',')[1]);
+            // if (trait == 0) {
+            //     PlayerManager.SetLockerItem(0, new Item(name, value, 0, 0));
+            // } else if (trait == 1) {
+            //     PlayerManager.SetLockerItem(0, new Item(name, 0, value, 0));
+            // } else if (trait == 2) {
+            //     PlayerManager.SetLockerItem(0, new Item(name, 0, 0, value));
+            // }
+            // for (int m = 0; m < 4; m++) {
+            //     if (PlayerManager.GetLockerItem(m) != null) {Debug.Log("Locker item " + m + ": " + PlayerManager.GetLockerItem(m).ToString());}
+            // }
+        } else {return null;}
     }
-
+    public static Item GenerateClothing(string username) {
+        if (Connect() == true) {
+            string message = "GENERATE_CLOTHING_ITEM " + username + "\n";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            message = server_response.Split(' ')[2]; server_response = null;
+            string[] temp = message.Split('_'); Item item = new(); int trait_id = 0;
+            for (int m = 1; m < temp.Length; m++) {
+                switch (m % 2) {
+                    case 0:
+                        if (m == 2) {continue;}
+                        else {
+                            switch (trait_id) {
+                                case 0: item.trait0 += int.Parse(temp[m]); break;
+                                case 1: item.trait1 += int.Parse(temp[m]); break;
+                                case 2: item.trait2 += int.Parse(temp[m]); break;
+                            }
+                        }
+                        break;
+                    case 1:
+                        if (m == 1) {item.name = temp[m];}
+                        else {trait_id = int.Parse(temp[m]);}
+                        break;
+                }
+            }
+            return item;
+        } else {return null;}
+    }
     public static bool UseRelaxSession(string username)
     {
-        bool flag = NetworkManager.Connect();
+        bool flag = Connect();
         if (flag == true) {
             string message = "UseRelax " + username;
             byte[] data = Encoding.UTF8.GetBytes(message);
-            NetworkManager.stream.Write(data, 0, data.Length);
+            stream.Write(data, 0, data.Length);
 
-            while (NetworkManager.server_response == null)
+            while (server_response == null)
             {
-                NetworkManager.ResponseCheck();
+                ResponseCheck();
                 Thread.Sleep(10);
             }
 
-            string[] response = NetworkManager.server_response.Split(' ');
-            NetworkManager.server_response = null;
+            string[] response = server_response.Split(' ');
+            server_response = null;
 
             if (response[1] == "0") {
                 int newEndurance = int.Parse(response[2]);
@@ -200,6 +225,18 @@ public class NetworkManager : MonoBehaviour
         }
         return false;
     }
-
-
+    public static void FetchLockerItems(string username) {
+        bool flag = Connect();
+        if (flag == true) {
+            string message = "FETCHLOCKER " + username + "\n";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            string[] temp = server_response.Split(' ');
+            server_response = null;
+            if (temp[1] == "0") {
+                
+            }
+        }
+    }
 }

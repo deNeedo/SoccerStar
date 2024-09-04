@@ -9,10 +9,10 @@ public class GameManager : MonoBehaviour {
             NetworkManager.FetchEndurance(PlayerManager.GetName());
         }
         SceneManager.LoadScene(scene_name);
-        GameManager.current_scene = scene_name;
+        current_scene = scene_name;
     }
     public static void Logout() {
-        GameManager.ChangeScene("00_Login");
+        ChangeScene("00_Login");
     }
     public static void Exit() {
         Application.Quit();
