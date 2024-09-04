@@ -32,7 +32,7 @@ public class EnduranceManager : MonoBehaviour
     }
     public void OnRelaxButtonClicked() {
         if (PlayerManager.GetStars() > 0 && PlayerManager.GetRelaxSessions() > 0 && PlayerManager.GetEndurance() <= 80) {
-            bool success = NetworkManager.UseRelaxSession(PlayerManager.Get());
+            bool success = NetworkManager.UseRelaxSession(PlayerManager.GetName());
             if (success) {
                 enduranceSlider.value = PlayerManager.GetEndurance();
                 UpdateEnduranceText();

@@ -61,7 +61,7 @@ public class NetworkManager : MonoBehaviour
                 NetworkManager.FetchStars(temp[2]);
                 NetworkManager.FetchEndurance(temp[2]);
                 NetworkManager.FetchSessions(temp[2]);
-                PlayerManager.Set(temp[2]);
+                PlayerManager.SetName(temp[2]);
                 ItemManager.Reset();
                 GameManager.ChangeScene("01_Profile");
             }
@@ -93,7 +93,7 @@ public class NetworkManager : MonoBehaviour
             NetworkManager.server_response = null;
             if (temp[1] == "0") {
                 temp = temp[2].Split('\t');
-                PlayerManager.Set(0, int.Parse(temp[0])); PlayerManager.Set(1, int.Parse(temp[1])); PlayerManager.Set(2, int.Parse(temp[2]));
+                PlayerManager.SetTrait(0, int.Parse(temp[0])); PlayerManager.SetTrait(1, int.Parse(temp[1])); PlayerManager.SetTrait(2, int.Parse(temp[2]));
             }
         }
     }

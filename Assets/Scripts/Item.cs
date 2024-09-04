@@ -10,7 +10,7 @@ public class Item {
         this.trait2 = trait2;
     }
     public static void Create() {
-        NetworkManager.GenerateItem(PlayerManager.Get());
+        NetworkManager.GenerateItem(PlayerManager.GetName());
     }
 
     override public string ToString() {
