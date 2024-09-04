@@ -5,6 +5,8 @@ public class GameManager : MonoBehaviour {
     public static void ChangeScene(string scene_name) {
         if (scene_name == "00_Login") {
             PlayerManager.Reset();
+        } else if (scene_name == "07_Wellness") {
+            NetworkManager.FetchEndurance(PlayerManager.Get());
         }
         SceneManager.LoadScene(scene_name);
         GameManager.current_scene = scene_name;

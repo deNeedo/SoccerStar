@@ -7,7 +7,6 @@ public class NewDayDetector extends Thread {
     public void run() {
         while (true) {
             long time_to_sleep = this.calculateTime();
-            System.out.println(time_to_sleep);
             try {Thread.sleep(time_to_sleep);}
             catch (Exception e) {e.printStackTrace();}
             this.newDayReset();
@@ -15,7 +14,6 @@ public class NewDayDetector extends Thread {
 
     }
     private void newDayReset() {
-        System.out.println("New Day Endurance Reset");
         File database = new File("./userdata/");
         String[] dirs = database.list();
         for (String dir : dirs) {

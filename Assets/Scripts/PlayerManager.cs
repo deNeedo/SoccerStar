@@ -5,7 +5,6 @@ public class PlayerManager : MonoBehaviour {
     private static int trait0 = 0;
     private static int trait1 = 0;
     private static int trait2 = 0;
-
     private static int endurance;
     private static int relaxSessions;
     private static int stars;
@@ -39,7 +38,6 @@ public class PlayerManager : MonoBehaviour {
     public static int GetStars() {
         return PlayerManager.stars;
     }
-
     public static void SetEndurance(int endurance) {
         PlayerManager.endurance = endurance;
         Debug.Log("Set endurance to: " + endurance);
