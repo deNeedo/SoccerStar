@@ -79,3 +79,6 @@ userdata
 # Config files
 *.config
 *.config.meta
+
+# Visual Studio Code
+.vscode
