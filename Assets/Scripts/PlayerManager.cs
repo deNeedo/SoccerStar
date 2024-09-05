@@ -6,9 +6,13 @@ public class PlayerManager : MonoBehaviour {
     private static int trait1 = 0;
     private static int trait2 = 0;
 
+    private static double cash;
     private static int endurance;
     private static int relaxSessions;
     private static int stars;
+    private static string startTimeStr;
+    private static string endTimeStr;
+
     public static UnityEvent<int> OnStarsChanged = new UnityEvent<int>();
 
     public static void Set(string username) {
@@ -54,6 +58,25 @@ public class PlayerManager : MonoBehaviour {
     public static int GetRelaxSessions() {
         return relaxSessions;
     }
+    public static double GetCash() {
+        return cash;
+    }
+    public static void SetCash(double newcash) {
+        PlayerManager.cash = newcash;
+    }
+    public static string GetStartTimeStr() {
+        return startTimeStr;
+    }
+    public static void SetStartTimeStr(string newtime) {
+        PlayerManager.startTimeStr = newtime;
+    }
+    public static string GetEndTimeStr() {
+        return endTimeStr;
+    }
+    public static void SetEndTimeStr(string newtime) {
+        PlayerManager.endTimeStr = newtime;
+    }
+
     public static int Get(int trait) {
         switch (trait) {
             case 0:

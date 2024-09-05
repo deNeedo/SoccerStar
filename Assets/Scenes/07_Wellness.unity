@@ -687,6 +687,7 @@ GameObject:
   - component: {fileID: 328072502}
   - component: {fileID: 328072501}
   - component: {fileID: 328072500}
+  - component: {fileID: 328072504}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -776,6 +777,7 @@ RectTransform:
   - {fileID: 1555684360}
   - {fileID: 515806111}
   - {fileID: 1465599347}
+  - {fileID: 352111345}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -845,6 +847,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enduranceSlider: {fileID: 951063364}
   enduranceText: {fileID: 1034394503}
+  feedbackText: {fileID: 0}
+  buttonText: {fileID: 0}
+  starsText: {fileID: 0}
 --- !u!1 &394730705
 GameObject:
   m_ObjectHideFlags: 0
@@ -2398,56 +2403,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1116281253}
   m_CullTransparentMesh: 1
---- !u!1 &1133608278
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1133608279}
-  - component: {fileID: 1133608280}
-  m_Layer: 5
-  m_Name: ButtonDecreaseHandler
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1133608279
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1133608278}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 5.45443}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 971603347}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -48.638733, y: 7.8952637}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1133608280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1133608278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9be5c2f9a98c08d4f93a9f751fd9c819, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  decreaseButton: {fileID: 962277996}
-  decreaseAmount: 20
 --- !u!1 &1136728067
 GameObject:
   m_ObjectHideFlags: 0

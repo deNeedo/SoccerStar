@@ -79,3 +79,4 @@ userdata
 # Config files
 *.config
 *.config.meta
+.vscode
