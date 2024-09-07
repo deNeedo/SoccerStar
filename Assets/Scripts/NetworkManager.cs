@@ -274,6 +274,8 @@ public class NetworkManager : MonoBehaviour
 
             Debug.Log("response: " + response[0] + " " + response[1]);
             if (response[1].Trim() == "0") {
+                PlayerManager.SetEndTimeStr("");
+                PlayerManager.SetStartTimeStr("");
                 // Debug.Log("Work canceled successfully.");
                 return true;
             } else {
@@ -324,9 +326,5 @@ public class NetworkManager : MonoBehaviour
         }
         else Debug.Log("Connection Error");
     }
-
-
-
-
 
 }

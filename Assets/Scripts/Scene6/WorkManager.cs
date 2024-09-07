@@ -2,33 +2,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Globalization;
+
 public class WorkManager : MonoBehaviour
 {
     public Text cashDisplayText;
     public Text sliderValueText;
     public Slider workSlider;
     public Button acceptButton;
-    private bool isWorking = false;
 
     private void Start()
     {
         NetworkManager.CheckWorkCompletion();
-
-        if (!string.IsNullOrEmpty(PlayerManager.GetEndTimeStr()) && !string.IsNullOrEmpty(PlayerManager.GetStartTimeStr()))
-        {
-            isWorking = true;
-            acceptButton.GetComponentInChildren<Text>().text = "Cancel";
-            Debug.Log("isWorking");
-            workSlider.interactable = false;
-
-            InvokeRepeating(nameof(UpdateWorkSliderWithRemainingTime), 0, 1f);
-        }
-        else 
-        {
-            Debug.Log("isn't Working");
-            UpdateSliderText();
-        }
-        UpdateCashDisplay();
+        UpdateUIBasedOnWorkStatus();
     }
 
     public void OnSliderValueChanged()
@@ -38,16 +23,14 @@ public class WorkManager : MonoBehaviour
 
     public void OnAcceptButtonClick()
     {
-        if (isWorking)
+        Debug.Log("end time: " + PlayerManager.GetEndTimeStr());
+        if (PlayerManager.IsWorking())
         {
-            if (NetworkManager.CancelWork() == true)
+            if (NetworkManager.CancelWork())
             {
                 acceptButton.GetComponentInChildren<Text>().text = "Accept";
                 workSlider.interactable = true;
-                isWorking = false;
-
                 CancelInvoke(nameof(UpdateWorkSliderWithRemainingTime));
-
                 UpdateSliderText();
             }
             else
@@ -58,12 +41,11 @@ public class WorkManager : MonoBehaviour
         else
         {
             int hours = Mathf.RoundToInt(workSlider.value);
-            Debug.Log("hours to work: " + hours);
-            if (NetworkManager.StartWork(hours) == true)
+            
+            if (NetworkManager.StartWork(hours))
             {
                 acceptButton.GetComponentInChildren<Text>().text = "Cancel";
                 workSlider.interactable = false;
-                isWorking = true;
                 NetworkManager.CheckWorkCompletion();
                 InvokeRepeating(nameof(UpdateWorkSliderWithRemainingTime), 0, 1f);
             }
@@ -72,6 +54,21 @@ public class WorkManager : MonoBehaviour
                 Debug.Log("Couldn't start");
             }
         }
+    }
+
+    private void UpdateUIBasedOnWorkStatus()
+    {
+        if (PlayerManager.IsWorking())
+        {
+            acceptButton.GetComponentInChildren<Text>().text = "Cancel";
+            workSlider.interactable = false;
+            InvokeRepeating(nameof(UpdateWorkSliderWithRemainingTime), 0, 1f);
+        }
+        else
+        {
+            UpdateSliderText();
+        }
+        UpdateCashDisplay();
     }
 
     private void UpdateCashDisplay()
@@ -108,8 +105,7 @@ public class WorkManager : MonoBehaviour
                 timeRemaining = TimeSpan.Zero;
                 Debug.Log("Work time has ended.");
                 CancelInvoke(nameof(UpdateWorkSliderWithRemainingTime));
-
-                this.Start();
+                UpdateUIBasedOnWorkStatus();
             }
 
             TimeSpan workShift = endTime - startTime;

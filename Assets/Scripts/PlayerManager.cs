@@ -12,6 +12,9 @@ public class PlayerManager : MonoBehaviour {
     private static int stars;
     private static string startTimeStr;
     private static string endTimeStr;
+    private static float trainingDuration;
+    private static float trainingEndTime;
+
 
     public static UnityEvent<int> OnStarsChanged = new UnityEvent<int>();
 
@@ -96,4 +99,8 @@ public class PlayerManager : MonoBehaviour {
         PlayerManager.username = null;
         Debug.Log("Reset");
     }
+    public static bool IsWorking() {
+        return !string.IsNullOrEmpty(endTimeStr);
+    }
+
 }
