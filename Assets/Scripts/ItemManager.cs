@@ -1,15 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 public class ItemManager : MonoBehaviour {
-    public Image shop_item_1;
-    public Image shop_item_2;
-    public Image shop_item_3;
-    public Image shop_item_4;
-    public Sprite empty;
-    public Sprite image_1;
-    public Sprite image_2;
-    public Sprite image_3;
-    public Sprite image_4;
     private static readonly Item[] clothes = new Item[4];
     private static Item food;
     public static void RefillClothes() {

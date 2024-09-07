@@ -188,6 +188,18 @@ public class NetworkManager : MonoBehaviour
             return item;
         } else {return null;}
     }
+    public static void FetchClothes(string username) {
+        bool flag = Connect();
+        if (flag == true) {
+            string message = "FETCHCLOTHES " + username + "\n";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            message = server_response.Split(' ')[2]; server_response = null;
+            string[] items = message.Split('\n');
+            
+        }
+    }
     public static bool UseRelaxSession(string username)
     {
         bool flag = Connect();
