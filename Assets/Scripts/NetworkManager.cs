@@ -61,6 +61,7 @@ public class NetworkManager : MonoBehaviour
                 FetchStars(temp[2]);
                 FetchEndurance(temp[2]);
                 FetchSessions(temp[2]);
+                FetchCash(temp[2]);
                 // FetchLockerItems(temp[2]);
                 PlayerManager.SetName(temp[2]);
                 GameManager.ChangeScene("01_Profile");
@@ -91,6 +92,8 @@ public class NetworkManager : MonoBehaviour
             if (temp[1] == "0") {
                 temp = temp[2].Split('\t');
                 PlayerManager.SetTrait(0, int.Parse(temp[0])); PlayerManager.SetTrait(1, int.Parse(temp[1])); PlayerManager.SetTrait(2, int.Parse(temp[2]));
+            } else {
+                Debug.LogError("Failed to fetch stats.");
             }
         }
     }
@@ -105,6 +108,8 @@ public class NetworkManager : MonoBehaviour
             server_response = null;
             if (temp[1] == "0") {
                 PlayerManager.SetStars(int.Parse(temp[2]));
+            } else {
+                Debug.LogError("Failed to fetch stars.");
             }
         }
     }
@@ -119,6 +124,8 @@ public class NetworkManager : MonoBehaviour
             server_response = null;
             if (temp[1] == "0") {
                 PlayerManager.SetEndurance(int.Parse(temp[2]));
+            } else {
+                Debug.LogError("Failed to fetch endurance.");
             }
         }
     }
@@ -133,9 +140,33 @@ public class NetworkManager : MonoBehaviour
             server_response = null;
             if (temp[1] == "0") {
                 PlayerManager.SetSessions(int.Parse(temp[2]));
+            } else {
+                Debug.LogError("Failed to fetch sessions.");
             }
         }
     }
+    public static void FetchCash(string username) {
+            bool flag = NetworkManager.Connect();
+            if (flag == true)
+            {
+                string message = "FETCHCASH " + username + "\n";
+                byte[] data = Encoding.UTF8.GetBytes(message);
+                NetworkManager.stream.Write(data, 0, data.Length);
+                while (NetworkManager.server_response == null){NetworkManager.ResponseCheck();Thread.Sleep(10);}
+
+                string[] response = (NetworkManager.server_response).Split(' ');
+                NetworkManager.server_response = null;
+
+                if (response[1] == "0")
+                {
+                    double cash = double.Parse(response[2]);
+                    PlayerManager.SetCash(cash);
+                    Debug.Log("Cash fetched successfully.");
+                } else {
+                    Debug.LogError("Failed to fetch cash.");
+                }
+            }
+        }
     public static Item GenerateFood(string username) {
         if (Connect() == true) {
             string message = "GENERATE_FOOD_ITEM " + username + "\n";
@@ -192,11 +223,10 @@ public class NetworkManager : MonoBehaviour
             }
         }
     }
-    public static bool UseRelaxSession(string username)
-    {
-        bool flag = Connect();
-        if (flag == true) {
-            string message = "UseRelax " + username;
+
+    public static bool UseRelaxSession(string username) {
+        if (Connect() == true) {
+            string message = "UseRelax " + username + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
             stream.Write(data, 0, data.Length);
 
@@ -220,9 +250,7 @@ public class NetworkManager : MonoBehaviour
 
                 Debug.Log("Relax session used successfully. Endurance increased, and stars/sessions decreased.");
                 return true;
-            }
-            else
-            {
+            } else {
                 Debug.LogError("Failed to use relax session on the server.");
                 return false;
             }
@@ -243,4 +271,103 @@ public class NetworkManager : MonoBehaviour
             }
         }
     }
+    public static bool StartWork(int hours) {
+        bool flag = NetworkManager.Connect();
+        if (flag) {
+            string message = "STARTWORK " + PlayerManager.GetName().Trim() + " " + hours + "\n";
+
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            NetworkManager.stream.Write(data, 0, data.Length);
+
+            while (NetworkManager.server_response == null) {
+                NetworkManager.ResponseCheck();
+                Thread.Sleep(10);
+            }
+
+            string[] response = NetworkManager.server_response.Split(' ');
+            NetworkManager.server_response = null;
+
+            if (response[1].Trim() == "0") { // popierdoli mnie, znowu trim, jebac
+                // Debug.Log("Work started successfully.");
+                return true;
+            }
+            else {
+                Debug.LogError("Failed to start work.");
+                return false;
+            }
+        }
+        Debug.LogError("Couldn't connect.");
+        return false;
+    }
+
+    public static bool CancelWork() {
+        bool flag = NetworkManager.Connect();
+        if (flag) {
+            string message = "CANCELWORK " + PlayerManager.GetName() + "\n";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            NetworkManager.stream.Write(data, 0, data.Length);
+
+            while (NetworkManager.server_response == null) {
+                NetworkManager.ResponseCheck();
+                Thread.Sleep(10);
+            }
+
+            string[] response = NetworkManager.server_response.Split(' ');
+            NetworkManager.server_response = null;
+
+            Debug.Log("response: " + response[0] + " " + response[1]);
+            if (response[1].Trim() == "0") {
+                PlayerManager.SetEndTimeStr("");
+                PlayerManager.SetStartTimeStr("");
+                // Debug.Log("Work canceled successfully.");
+                return true;
+            } else {
+                Debug.LogError("Failed to cancel work.");
+                return false;
+            }
+        }
+        else {
+            Debug.Log("Connection Error");
+            return false;
+        }
+    }
+    public static void CheckWorkCompletion() {
+        bool flag = NetworkManager.Connect();
+        if (flag) {
+            string message = "CHECKWORK " + PlayerManager.GetName() + "\n";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            NetworkManager.stream.Write(data, 0, data.Length);
+
+            while (NetworkManager.server_response == null) {
+                NetworkManager.ResponseCheck();
+                Thread.Sleep(10);
+            }
+
+            string[] response = NetworkManager.server_response.Split(' ');
+            NetworkManager.server_response = null;
+
+            if (response[1] == "0") {
+                double cash = double.Parse(response[2]);
+                PlayerManager.SetCash(cash);
+                PlayerManager.SetEndTimeStr("");
+                PlayerManager.SetStartTimeStr("");
+                Debug.Log("Work completed, cash added.");
+            }
+            else {
+                string startTimeStr;
+                string endTimeStr;
+                if (response.Length > 4) {
+                    startTimeStr = response[2] + " " + response[3];
+                    endTimeStr = response[4] + " " + response[5];
+                } else {
+                    startTimeStr = "";
+                    endTimeStr = "";
+                }
+                PlayerManager.SetStartTimeStr(startTimeStr);
+                PlayerManager.SetEndTimeStr(endTimeStr);
+            }
+        }
+        else Debug.Log("Connection Error");
+    }
+
 }

@@ -11,6 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Random;
  
 public class App {
@@ -93,6 +96,7 @@ public class App {
                             if (dir.equals(data[1])) {out.println("REGISTER 1"); flag = false;}
                         }
                         if (flag == true) {
+                            System.out.println("a");
                             File userdata = new File("./userdata/" + data[1]); userdata.mkdirs();
                             // hash
                             userdata = new File("./userdata/" + data[1] + "/cred"); userdata.createNewFile();
@@ -107,6 +111,7 @@ public class App {
                             // init equiped items (meaning no equiped items at the start)
                             userdata = new File("./userdata/" + data[1] + "/item"); userdata.createNewFile();
                             // init 10 stars
+                            System.out.println("aa");
                             userdata = new File("./userdata/" + data[1] + "/star"); userdata.createNewFile();
                             writer = new FileWriter(userdata); writer.write("10"); writer.close();
                             // init 100 endurance
@@ -125,13 +130,16 @@ public class App {
                                 else {writer.write(generateClothing()); writer.write("\n");}
                             }
                             writer.close();
+                            userdata = new File("./userdata/" + data[1] + "/cash"); userdata.createNewFile();
+                            writer = new FileWriter(userdata); writer.write("7.5"); writer.close();
                             // init food item
                             userdata = new File("./userdata/" + data[1] + "/food"); userdata.createNewFile();
                             writer = new FileWriter(userdata); writer.write(generateFood()); writer.close();
                             out.println("REGISTER 0");
+                            System.out.println("b");
+
                         }
-                    }
-                    else if (data[0].equals("FETCHSTARS")) {
+                    } else if (data[0].equals("FETCHSTARS")) {
                         try {
                             File userdata = new File("./userdata/" + data[1] + "/star");
                             FileReader reader = new FileReader(userdata);
@@ -145,8 +153,7 @@ public class App {
                         } catch (Exception e) {
                             out.println("FETCHSTARS 1");
                         }
-                    }
-                    else if (data[0].equals("FETCHENDURANCE")) {
+                    } else if (data[0].equals("FETCHENDURANCE")) {
                         try {
                             File userdata = new File("./userdata/" + data[1] + "/endu");
                             FileReader reader = new FileReader(userdata);
@@ -161,9 +168,10 @@ public class App {
                         catch (Exception e) {
                             out.println("FETCHENDURANCE 1");
                         }
-                    }
-                    else if (data[0].equals("FETCHSESSIONS")) {
+                    } else if (data[0].equals("FETCHSESSIONS")) {
                         try {
+                            System.out
+                                    .println("Client: " + clientSocket.getInetAddress() + " | Sessions fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/sess");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -173,12 +181,25 @@ public class App {
                             }
                             out.println("FETCHSESSIONS 0 " + temp);
                             reader.close();
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             out.println("FETCHSESSIONS 1");
                         }
-                    }
-                    else if (data[0].equals("FETCHSTATS")) {
+                    } else if (data[0].equals("FETCHCASH")) {
+                        try {
+                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Cash fetch request");
+                            File userdata = new File("./userdata/" + data[1] + "/cash");
+                            FileReader reader = new FileReader(userdata);
+                            int m;
+                            String temp = "";
+                            while ((m = reader.read()) != -1) {
+                                temp += (char) m;
+                            }
+                            out.println("FETCHCASH 0 " + temp);
+                            reader.close();
+                        } catch (Exception e) {
+                            out.println("FETCHCASH 1");
+                        }
+                    } else if (data[0].equals("FETCHSTATS")) {
                         try {
                             File userdata = new File("./userdata/" + data[1] + "/stat");
                             FileReader reader = new FileReader(userdata);
@@ -194,6 +215,7 @@ public class App {
                         }
                     }
                     else if (data[0].equals("GENERATE_FOOD_ITEM")) {
+                    } else if (data[0].equals("FETCHITEMS")) {
                         try {
                             out.println("GENERATE_FOOD_ITEM 0 " + generateFood());
                         } catch (Exception e) {
@@ -229,11 +251,14 @@ public class App {
 
                             // Fetch current values
                             int currentEndurance = Integer.parseInt(
-                                    new String(Files.readAllBytes(Paths.get("./userdata/" + username + "/endu"))).trim());
+                                    new String(Files.readAllBytes(Paths.get("./userdata/" + username + "/endu")))
+                                            .trim());
                             int currentStars = Integer.parseInt(
-                                    new String(Files.readAllBytes(Paths.get("./userdata/" + username + "/star"))).trim());
+                                    new String(Files.readAllBytes(Paths.get("./userdata/" + username + "/star")))
+                                            .trim());
                             int currentSessions = Integer.parseInt(
-                                    new String(Files.readAllBytes(Paths.get("./userdata/" + username + "/sess"))).trim());
+                                    new String(Files.readAllBytes(Paths.get("./userdata/" + username + "/sess")))
+                                            .trim());
 
                             if (currentStars > 0 && currentSessions > 0 && currentEndurance <= 80) {
                                 currentEndurance += 20;
@@ -250,17 +275,98 @@ public class App {
                                     writer.write(String.valueOf(currentSessions));
                                 }
 
-                                out.println("UseRelax 0 " + currentEndurance + " " + currentStars + " " + currentSessions);
+                                out.println(
+                                        "UseRelax 0 " + currentEndurance + " " + currentStars + " " + currentSessions);
                             } else {
                                 out.println("UseRelax 1");
                             }
                         } catch (Exception e) {
                             out.println("UseRelax 1");
                         }
+                    } else if (data[0].equals("STARTWORK")) {
+                        try {
+                            String username = data[1];
+                            int hours = Integer.parseInt(data[2]);
+
+                            if (hours > 10 || hours < 1) {
+                                throw new Exception("too many or too low hours");
+                            }
+
+                            LocalDateTime startTime = LocalDateTime.now();
+                            LocalDateTime endTime = startTime.plusHours(hours);
+
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                            String startTimeFormatted = startTime.format(formatter);
+                            String endTimeFormatted = endTime.format(formatter);
+
+                            File workFile = new File("./userdata/" + username + "/work");
+                            FileWriter writer = new FileWriter(workFile);
+                            writer.write(startTimeFormatted + "\n" + endTimeFormatted);
+                            writer.close();
+
+                            out.println("STARTWORK 0");
+                        } catch (Exception e) {
+                            System.out.println(e);
+                            out.println("STARTWORK 1");
+                        }
+                    } else if (data[0].equals("CANCELWORK")) {
+                        try {
+                            String username = data[1];
+                            File workFile = new File("./userdata/" + username + "/work");
+                            if (workFile.exists()) {
+                                workFile.delete();
+                            }
+
+                            out.println("CANCELWORK 0");
+                        } catch (Exception e) {
+                            out.println("CANCELWORK 1");
+                        }
+                    } else if (data[0].equals("CHECKWORK")) {
+                        try {
+                            String username = data[1];
+                    
+                            File workFile = new File("./userdata/" + username + "/work");
+                    
+                            if (workFile.exists()) {
+                                BufferedReader reader = new BufferedReader(new FileReader(workFile));
+                                String startTimeStr = reader.readLine();
+                                String endTimeStr = reader.readLine();
+                                reader.close();
+                    
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                                LocalDateTime endTime = LocalDateTime.parse(endTimeStr, formatter);
+                                LocalDateTime currentTime = LocalDateTime.now();
+                    
+                                if (currentTime.isAfter(endTime)) {
+
+                                    // Work completed, add cash pattern
+                                    double cashToAdd = ChronoUnit.HOURS.between(LocalDateTime.parse(startTimeStr, formatter), endTime) * 5;
+                    
+                                    File cashFile = new File("./userdata/" + username + "/cash");
+                                    double currentCash = Double.parseDouble(new String(Files.readAllBytes(cashFile.toPath())).trim());
+                                    currentCash += cashToAdd;
+                    
+                                    try (FileWriter writer = new FileWriter(cashFile)) {
+                                        writer.write(String.valueOf(currentCash));
+                                    }
+                    
+                                    workFile.delete();
+                    
+                                    out.println("CHECKWORK 0 " + currentCash);
+                                } else {
+                                    out.println("CHECKWORK 1 " + startTimeStr + " " + endTimeStr);
+                                }
+                            } else {
+                                out.println("CHECKWORK 1");
+                            }
+                        } catch (Exception e) {
+                            out.println("CHECKWORK 1");
+                        }
                     }
                     clientSocket.close();
                 }
-                catch (Exception e) {System.err.println("Client handling error: " + e.getLocalizedMessage());}
+                catch (Exception e) {e.printStackTrace();}
             }
         }
         catch (Exception e) {System.err.println("Server error: " + e.getLocalizedMessage());}

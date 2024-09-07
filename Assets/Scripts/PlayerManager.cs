@@ -8,6 +8,11 @@ public class PlayerManager : MonoBehaviour {
     private static int endurance;
     private static int relaxSessions;
     private static int stars;
+    private static double cash;
+    private static string startTimeStr;
+    private static string endTimeStr;
+    private static float trainingDuration;
+    private static float trainingEndTime;
     private static Item[] locker = new Item[4];
     private static Item[] equiped = new Item[5];
     public static UnityEvent<int> OnStarsChanged = new UnityEvent<int>();
@@ -47,6 +52,25 @@ public class PlayerManager : MonoBehaviour {
     public static int GetRelaxSessions() {
         return relaxSessions;
     }
+    public static double GetCash() {
+        return cash;
+    }
+    public static void SetCash(double newcash) {
+        PlayerManager.cash = newcash;
+    }
+    public static string GetStartTimeStr() {
+        return startTimeStr;
+    }
+    public static void SetStartTimeStr(string newtime) {
+        PlayerManager.startTimeStr = newtime;
+    }
+    public static string GetEndTimeStr() {
+        return endTimeStr;
+    }
+    public static void SetEndTimeStr(string newtime) {
+        PlayerManager.endTimeStr = newtime;
+    }
+
     public static int GetTrait(int trait) {
         switch (trait) {
             case 0:
@@ -71,4 +95,8 @@ public class PlayerManager : MonoBehaviour {
     public static Item GetLockerItem(int place) {
         return locker[place];
     }
+    public static bool IsWorking() {
+        return !string.IsNullOrEmpty(endTimeStr);
+    }
+
 }
