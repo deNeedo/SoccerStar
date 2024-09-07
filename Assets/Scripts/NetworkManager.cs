@@ -153,26 +153,7 @@ public class NetworkManager : MonoBehaviour
             stream.Write(data, 0, data.Length);
             while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
             message = server_response.Split(' ')[2]; server_response = null;
-            string[] temp = message.Split('_'); Item item = new(); int trait_id = 0;
-            for (int m = 1; m < temp.Length; m++) {
-                switch (m % 2) {
-                    case 0:
-                        if (m == 2) {continue;}
-                        else {
-                            switch (trait_id) {
-                                case 0: item.trait0 += int.Parse(temp[m]); break;
-                                case 1: item.trait1 += int.Parse(temp[m]); break;
-                                case 2: item.trait2 += int.Parse(temp[m]); break;
-                            }
-                        }
-                        break;
-                    case 1:
-                        if (m == 1) {item.name = temp[m];}
-                        else {trait_id = int.Parse(temp[m]);}
-                        break;
-                }
-            }
-            return item;
+            return CreateItem(message);
         } else {return null;}
     }
     private static Item CreateItem(string data) {
