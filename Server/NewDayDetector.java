@@ -8,7 +8,7 @@ public class NewDayDetector extends Thread {
         while (true) {
             long time_to_sleep = this.calculateTime();
             try {Thread.sleep(time_to_sleep);}
-            catch (Exception e) {e.printStackTrace();}
+            catch (Exception e) {System.out.println(e.getLocalizedMessage());}
             this.newDayReset();
         }
 
@@ -21,7 +21,10 @@ public class NewDayDetector extends Thread {
                 File userdata = new File("./userdata/" + dir + "/endu");
                 FileWriter writer = new FileWriter(userdata);
                 writer.write("100"); writer.close();
-            } catch (Exception e) {/* put here some nice error about missing / unaccesible files */}
+                userdata = new File("./userdata/" + dir + "/sess");
+                writer = new FileWriter(userdata);
+                writer.write("10"); writer.close();
+            } catch (Exception e) {System.out.println(e.getLocalizedMessage());}
         }
     }
     private long calculateTime() {

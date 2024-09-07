@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour {
         if (scene_name == "00_Login") {
             PlayerManager.Reset();
         } else if (scene_name == "03_Clothes") {
-            ItemManager.RefillClothes();
+            ItemManager.FetchClothes();
         } else if (scene_name == "07_Wellness") {
             NetworkManager.FetchEndurance(PlayerManager.GetName());
         }

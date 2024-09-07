@@ -5,7 +5,7 @@ public class ItemManager : MonoBehaviour {
     private static Item food;
     public static void RefillClothes() {
         for (int m = 0; m < 4; m++) {
-            Item item = NetworkManager.GenerateClothing(PlayerManager.GetName());
+            Item item = NetworkManager.GenerateClothing(PlayerManager.GetName(), m);
             SetClothing(item, m);
         }
     }
@@ -13,7 +13,7 @@ public class ItemManager : MonoBehaviour {
         SetFood(NetworkManager.GenerateFood(PlayerManager.GetName()));
     }
     public static void FetchClothes() {
-        // NetworkManager.FetchClothes(PlayerManager.GetName());
+        NetworkManager.FetchClothes(PlayerManager.GetName());
     }
     public static void FetchFood() {
         // NetworkManager.FetchFood(PlayerManager.GetName());

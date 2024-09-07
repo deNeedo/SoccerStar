@@ -8,7 +8,9 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Random;
  
 public class App {
@@ -72,7 +74,6 @@ public class App {
                     PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
                     String message = in.readLine(); String[] data = message.split(" ");
                     if (data[0].equals("LOGIN")) {
-                        System.out.println("Client: " + clientSocket.getInetAddress() + " | Login request");
                         File database = new File("./userdata/");
                         String[] dirs = database.list(); boolean flag = true;
                         for (String dir : dirs) {
@@ -86,7 +87,6 @@ public class App {
                         }
                         if (flag == true) {out.println("LOGIN 1");}
                     } else if (data[0].equals("REGISTER")) {
-                        System.out.println("Client: " + clientSocket.getInetAddress() + " | Registration request");
                         File database = new File("./userdata/");
                         String[] dirs = database.list(); boolean flag = true;
                         for (String dir : dirs) {
@@ -121,7 +121,8 @@ public class App {
                             userdata = new File("./userdata/" + data[1] + "/shop"); userdata.createNewFile();
                             writer = new FileWriter(userdata);
                             for (int m = 0; m < 4; m++) {
-                                writer.write(generateClothing()); writer.write("\n");
+                                if (m == 3) {writer.write(generateClothing());}
+                                else {writer.write(generateClothing()); writer.write("\n");}
                             }
                             writer.close();
                             // init food item
@@ -132,7 +133,6 @@ public class App {
                     }
                     else if (data[0].equals("FETCHSTARS")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Stars fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/star");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -148,7 +148,6 @@ public class App {
                     }
                     else if (data[0].equals("FETCHENDURANCE")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Endurance fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/endu");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -165,7 +164,6 @@ public class App {
                     }
                     else if (data[0].equals("FETCHSESSIONS")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Sessions fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/sess");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -182,7 +180,6 @@ public class App {
                     }
                     else if (data[0].equals("FETCHSTATS")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Stats fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/stat");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -204,7 +201,12 @@ public class App {
                         }
                     } else if (data[0].equals("GENERATE_CLOTHING_ITEM")) {
                         try {
-                            out.println("GENERATE_CLOTHING_ITEM 0 " + generateClothing());
+                            Path path = Paths.get("./userdata/", data[1], "/shop");
+                            List<String> lines = Files.readAllLines(path);
+                            String item = generateClothing();
+                            lines.set(Integer.parseInt(data[2]), item);
+                            Files.write(path, lines);
+                            out.println("GENERATE_CLOTHING_ITEM 0 " + item);
                         } catch (Exception e) {
                             out.println("GENERATE_CLOTHING_ITEM 1");
                         }
@@ -223,7 +225,6 @@ public class App {
                     } 
                     else if (data[0].equals("UseRelax")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | UseRelax request");
                             String username = data[1];
 
                             // Fetch current values
@@ -251,7 +252,6 @@ public class App {
 
                                 out.println("UseRelax 0 " + currentEndurance + " " + currentStars + " " + currentSessions);
                             } else {
-                                System.out.println("Not enough Stars or Sessions or too much Endurance");
                                 out.println("UseRelax 1");
                             }
                         } catch (Exception e) {

@@ -18,7 +18,7 @@ public class NetworkManager : MonoBehaviour
         if (stream != null && stream.DataAvailable) {
             byte[] receivedData = new byte[client.Available];
             stream.Read(receivedData, 0, receivedData.Length);
-            server_response = Encoding.UTF8.GetString(receivedData);
+            server_response = Encoding.UTF8.GetString(receivedData).Trim();
         }
     }
     private static void ConnectInit() {
@@ -76,9 +76,7 @@ public class NetworkManager : MonoBehaviour
             while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
             string[] temp = server_response.Split(' ');
             server_response = null;
-            if (temp[1].Trim() == "0") { // Zmieniłem na Trim bo za chuja mi nie działało bez, nie mam pojęcia czemu
-                GameManager.ChangeScene("00_Login");
-            }
+            if (temp[1].Trim() == "0") {GameManager.ChangeScene("00_Login");}
         }
     }
     public static void FetchTraits(string username) {
@@ -146,22 +144,11 @@ public class NetworkManager : MonoBehaviour
             while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
             message = server_response.Split(' ')[2]; server_response = null;
             return new();
-            // string name = temp[0]; int trait = int.Parse(temp[1].Split(',')[0]); int value = int.Parse(temp[1].Split(',')[1]);
-            // if (trait == 0) {
-            //     PlayerManager.SetLockerItem(0, new Item(name, value, 0, 0));
-            // } else if (trait == 1) {
-            //     PlayerManager.SetLockerItem(0, new Item(name, 0, value, 0));
-            // } else if (trait == 2) {
-            //     PlayerManager.SetLockerItem(0, new Item(name, 0, 0, value));
-            // }
-            // for (int m = 0; m < 4; m++) {
-            //     if (PlayerManager.GetLockerItem(m) != null) {Debug.Log("Locker item " + m + ": " + PlayerManager.GetLockerItem(m).ToString());}
-            // }
         } else {return null;}
     }
-    public static Item GenerateClothing(string username) {
+    public static Item GenerateClothing(string username, int slot) {
         if (Connect() == true) {
-            string message = "GENERATE_CLOTHING_ITEM " + username + "\n";
+            string message = "GENERATE_CLOTHING_ITEM " + username + " " + slot + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
             stream.Write(data, 0, data.Length);
             while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
@@ -188,16 +175,40 @@ public class NetworkManager : MonoBehaviour
             return item;
         } else {return null;}
     }
+    private static Item CreateItem(string data) {
+        string[] temp = data.Split('_'); Item item = new(); int trait_id = 0;
+        for (int m = 1; m < temp.Length; m++) {
+            switch (m % 2) {
+                case 0:
+                    if (m == 2) {continue;}
+                    else {
+                        switch (trait_id) {
+                            case 0: item.trait0 += int.Parse(temp[m]); break;
+                            case 1: item.trait1 += int.Parse(temp[m]); break;
+                            case 2: item.trait2 += int.Parse(temp[m]); break;
+                        }
+                    }
+                    break;
+                case 1:
+                    if (m == 1) {item.name = temp[m];}
+                    else {trait_id = int.Parse(temp[m]);}
+                    break;
+            }
+        }
+        return item;
+    }
     public static void FetchClothes(string username) {
         bool flag = Connect();
         if (flag == true) {
-            string message = "FETCHCLOTHES " + username + "\n";
+            string message = "FETCH_CLOTHING_ITEMS " + username + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
             stream.Write(data, 0, data.Length);
             while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
             message = server_response.Split(' ')[2]; server_response = null;
-            string[] items = message.Split('\n');
-            
+            string[] message2 = message.Split('\n');
+            for (int m = 0; m < message2.Length; m++) {
+                ItemManager.SetClothing(CreateItem(message2[m]), m);
+            }
         }
     }
     public static bool UseRelaxSession(string username)
