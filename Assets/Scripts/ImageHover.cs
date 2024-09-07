@@ -19,7 +19,6 @@ public class ImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             case "Item 4":
                 description_text.text = ItemManager.GetClothing(3).ToString(); break;
         }
-        description_box.transform.position.Set(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
         description_box.gameObject.SetActive(true);
     }
 
