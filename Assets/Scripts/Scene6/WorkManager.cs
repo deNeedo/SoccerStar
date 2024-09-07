@@ -1,163 +1,124 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Globalization;
 
 public class WorkManager : MonoBehaviour
 {
-    [SerializeField] private Button acceptButton;
-    [SerializeField] private Button cancelButton;
-    [SerializeField] private Button testCompleteButton;
-    [SerializeField] private Slider workSlider;
-    [SerializeField] private Text hoursText;
-    [SerializeField] private Text timeRemainingText;
-
-    private Coroutine updateCoroutine;
+    public Text cashDisplayText;
+    public Text sliderValueText;
+    public Slider workSlider;
+    public Button acceptButton;
 
     private void Start()
     {
-        workSlider.minValue = 1;
-        workSlider.maxValue = 10;
-        workSlider.value = 1;
-
-        workSlider.onValueChanged.AddListener(OnSliderValueChanged);
-        acceptButton.onClick.AddListener(OnAcceptButtonClick);
-        cancelButton.onClick.AddListener(OnCancelButtonClick);
-        testCompleteButton.onClick.AddListener(OnTestCompleteButtonClick);
-
-        CheckInitialWorkSessionStatus();
+        NetworkManager.CheckWorkCompletion();
+        UpdateUIBasedOnWorkStatus();
     }
 
-    private void OnSliderValueChanged(float value)
+    public void OnSliderValueChanged()
     {
-        hoursText.text = $"Hours: {Mathf.RoundToInt(value)}";
+        UpdateSliderText();
     }
 
-    private void OnAcceptButtonClick()
+    public void OnAcceptButtonClick()
     {
-        int hours = Mathf.RoundToInt(workSlider.value);
-        DateTime endTime = DateTime.UtcNow.AddHours(hours);
-
-        PlayerStats.Instance.SetEndTime(endTime);
-        PlayerStats.Instance.SetStartTime(DateTime.UtcNow);
-
-        Debug.Log($"Work session started for {hours} hours.");
-
-        SetSliderInteractable(false);
-
-        if (updateCoroutine != null)
+        Debug.Log("end time: " + PlayerManager.GetEndTimeStr());
+        if (PlayerManager.IsWorking())
         {
-            StopCoroutine(updateCoroutine);
-        }
-        updateCoroutine = StartCoroutine(UpdateTimeRemaining());
-    }
-
-    private void OnTestCompleteButtonClick()
-    {
-        // Immediately complete the work session
-        CompleteWorkSession();
-    }
-
-    private void CheckInitialWorkSessionStatus()
-    {
-        if (PlayerStats.Instance.IsWorkSessionActive())
-        {
-            SetSliderInteractable(false);
-
-            DateTime endTime = PlayerStats.Instance.GetEndTime();
-            DateTime startTime = PlayerStats.Instance.GetStartTime();
-
-            if (endTime > DateTime.UtcNow)
+            if (NetworkManager.CancelWork())
             {
-                TimeSpan remainingTime = endTime - DateTime.UtcNow;
-
-                float remainingHours = (float)remainingTime.TotalHours;
-                workSlider.value = remainingHours;
-
-                timeRemainingText.text = $"Time Remaining: {FormatTimeSpan(remainingTime)}";
-
-                updateCoroutine = StartCoroutine(UpdateTimeRemaining());
+                acceptButton.GetComponentInChildren<Text>().text = "Accept";
+                workSlider.interactable = true;
+                CancelInvoke(nameof(UpdateWorkSliderWithRemainingTime));
+                UpdateSliderText();
             }
             else
             {
-                CompleteWorkSession();
+                Debug.Log("Couldn't cancel");
             }
         }
         else
         {
-            timeRemainingText.text = "No active work session.";
-            SetSliderInteractable(true);
-        }
-    }
-
-    private IEnumerator UpdateTimeRemaining()
-    {
-        while (PlayerStats.Instance.IsWorkSessionActive())
-        {
-            DateTime endTime = PlayerStats.Instance.GetEndTime();
-            DateTime startTime = PlayerStats.Instance.GetStartTime();
-
-            if (endTime > DateTime.UtcNow)
+            int hours = Mathf.RoundToInt(workSlider.value);
+            
+            if (NetworkManager.StartWork(hours))
             {
-                TimeSpan remainingTime = endTime - DateTime.UtcNow;
-                timeRemainingText.text = $"Time Remaining: {FormatTimeSpan(remainingTime)}";
+                acceptButton.GetComponentInChildren<Text>().text = "Cancel";
+                workSlider.interactable = false;
+                NetworkManager.CheckWorkCompletion();
+                InvokeRepeating(nameof(UpdateWorkSliderWithRemainingTime), 0, 1f);
             }
             else
             {
-                CompleteWorkSession();
-                yield break;
+                Debug.Log("Couldn't start");
+            }
+        }
+    }
+
+    private void UpdateUIBasedOnWorkStatus()
+    {
+        if (PlayerManager.IsWorking())
+        {
+            acceptButton.GetComponentInChildren<Text>().text = "Cancel";
+            workSlider.interactable = false;
+            InvokeRepeating(nameof(UpdateWorkSliderWithRemainingTime), 0, 1f);
+        }
+        else
+        {
+            UpdateSliderText();
+        }
+        UpdateCashDisplay();
+    }
+
+    private void UpdateCashDisplay()
+    {
+        cashDisplayText.text = $"Cash: {PlayerManager.GetCash()}";
+    }
+
+    private void UpdateSliderText()
+    {
+        sliderValueText.text = "Hours: " + workSlider.value.ToString("F0");
+    }
+
+    private void UpdateWorkSliderWithRemainingTime()
+    {
+        string dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
+        string startTimeStr = PlayerManager.GetStartTimeStr().Trim();
+        string endTimeStr = PlayerManager.GetEndTimeStr().Trim();
+
+        Debug.Log("Raw Start Time: " + startTimeStr);
+        Debug.Log("Raw End Time: " + endTimeStr);
+
+        if (DateTime.TryParseExact(endTimeStr, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime endTime) &&
+            DateTime.TryParseExact(startTimeStr, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime startTime))
+        {
+            Debug.Log("Parsed End Time: " + endTime);
+            Debug.Log("Parsed Start Time: " + startTime);
+
+            DateTime currentTime = DateTime.Now;
+            TimeSpan timeRemaining = endTime - currentTime;
+
+            if (timeRemaining.TotalSeconds <= 0)
+            {
+                timeRemaining = TimeSpan.Zero;
+                Debug.Log("Work time has ended.");
+                CancelInvoke(nameof(UpdateWorkSliderWithRemainingTime));
+                UpdateUIBasedOnWorkStatus();
             }
 
-            yield return new WaitForSeconds(1);
+            TimeSpan workShift = endTime - startTime;
+            double totalWorkShiftMinutes = workShift.TotalMinutes;
+            double remainingMinutes = timeRemaining.TotalMinutes;
+
+            workSlider.value = (float)(remainingMinutes / totalWorkShiftMinutes) * 10;
+
+            sliderValueText.text = $"Time left: {timeRemaining.Hours}h {timeRemaining.Minutes}m {timeRemaining.Seconds}s";
         }
-    }
-
-    private void CompleteWorkSession()
-    {
-        DateTime endTime = PlayerStats.Instance.GetEndTime();
-        DateTime startTime = PlayerStats.Instance.GetStartTime();
-        TimeSpan workedDuration = endTime - startTime;
-//        Debug.Log($"Got {workedDuration} workedDuration!");
-//        Debug.Log($"Got {workedDuration.TotalHours} workedDuration.TotalHours!");
-
-        int hoursWorked = Mathf.RoundToInt((float)workedDuration.TotalHours);
-        int cashEarned = hoursWorked * 100;
-        PlayerStats.Instance.IncreaseCash(cashEarned);
-
-        Debug.Log($"Got {cashEarned} cash!");
-        timeRemainingText.text = "Work session completed!";
-
-        PlayerStats.Instance.SetEndTime(DateTimeOffset.FromUnixTimeSeconds(0).DateTime);
-        PlayerStats.Instance.SetStartTime(DateTimeOffset.FromUnixTimeSeconds(0).DateTime);
-
-        SetSliderInteractable(true);
-    }
-
-    private void OnCancelButtonClick()
-    {
-        PlayerStats.Instance.SetEndTime(DateTimeOffset.FromUnixTimeSeconds(0).DateTime);
-        PlayerStats.Instance.SetStartTime(DateTimeOffset.FromUnixTimeSeconds(0).DateTime);
-
-        SetSliderInteractable(true);
-
-        timeRemainingText.text = "Work session canceled.";
-
-        if (updateCoroutine != null)
+        else
         {
-            StopCoroutine(updateCoroutine);
-            updateCoroutine = null;
+            Debug.LogError("Failed to parse start or end time.");
         }
-    }
-
-    private void SetSliderInteractable(bool interactable)
-    {
-        workSlider.interactable = interactable;
-        acceptButton.interactable = interactable;
-//        Debug.Log($"Got {interactable} interactable!");
-    }
-
-    private string FormatTimeSpan(TimeSpan timeSpan)
-    {
-        return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
     }
 }
