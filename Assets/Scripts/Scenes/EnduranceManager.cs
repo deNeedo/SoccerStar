@@ -8,8 +8,7 @@ public class EnduranceManager : MonoBehaviour
     public Text feedbackText;
     public Text buttonText;
     public Text starsText;
-
-    private void Start()
+    public void Start()
     {
         enduranceSlider.value = PlayerManager.GetEndurance();
         UpdateEnduranceText();
@@ -17,7 +16,6 @@ public class EnduranceManager : MonoBehaviour
         UpdateFeedbackText("1 Star for Relax Session");
         UpdateStarsText();
     }
-
     private void UpdateEnduranceText() {
         enduranceText.text = PlayerManager.GetEndurance().ToString();
     }
