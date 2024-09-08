@@ -8,17 +8,72 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
-
+ 
 public class App {
     private static final int PORT = 54429;
+    private static final int number_of_traits = 3;
     private static Random random = new Random();
+    private static String generateClothing() {
+        /* name of the item with 3 digit designator */
+        String item = "clothing_";
+        for (int m = 0; m < 3; m++) {
+            item += App.random.nextInt(10);
+        }
+        /* number of traits given clothing will boost */
+        int number_of_boosts = (int) Math.floor(1 + Math.random() * 5);
+        item += "_" + number_of_boosts;
+        /* trait given clothing will boost and amount of boost (as a integer value) */
+        for (int m = 0; m < number_of_boosts; m++) {
+            item += "_" + (int) Math.floor(Math.random() * number_of_traits);
+            item += "_" + (int) Math.floor(1 + Math.random() * 10);
+        }
+        return item;
+    }
+    private static String generateFood() {
+        /* name of the item with 3 digit designator */
+        String item = "food_";
+        for (int m = 0; m < 3; m++) {
+            item += App.random.nextInt(10);
+        }
+        /* number of traits given clothing will boost */
+        int number_of_boosts = (int) Math.floor(1 + Math.random() * 2);
+        item += "_" + number_of_boosts;
+        /* trait given food will boost and amount of boost in % */
+        for (int m = 0; m < number_of_boosts; m++) {
+            item += "_" + (int) Math.floor(Math.random() * number_of_traits);
+            item += "_" + (int) Math.floor(10 + Math.random() * 10);
+        }
+        return item;
+        /* after rework it will reduce time from training instead of boosting trait */
+    }
+    private static String fetchClothing(String username) {
+        String items = "";
+        try {
+            items = new String(Files.readAllBytes(Paths.get("./userdata/" + username + "/shop")));
+        } catch (Exception e) {
+            items = "";
+        }
+        return items;
+    }
+    private static String fetchFood(String username) {
+        String items = "";
+        try {
+            items = new String(Files.readAllBytes(Paths.get("./userdata/" + username + "/food")));
+        } catch (Exception e) {
+            items = "";
+        }
+        return items;
+    }
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            new Thread(new NewDayDetector()).start();
             System.out.println("Server started");
             while (true) {
                 try (Socket clientSocket = serverSocket.accept()) {
@@ -26,7 +81,6 @@ public class App {
                     PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
                     String message = in.readLine(); String[] data = message.split(" ");
                     if (data[0].equals("LOGIN")) {
-                        System.out.println("Client: " + clientSocket.getInetAddress() + " | Login request");
                         File database = new File("./userdata/");
                         String[] dirs = database.list(); boolean flag = true;
                         for (String dir : dirs) {
@@ -40,7 +94,6 @@ public class App {
                         }
                         if (flag == true) {out.println("LOGIN 1");}
                     } else if (data[0].equals("REGISTER")) {
-                        System.out.println("Client: " + clientSocket.getInetAddress() + " | Registration request");
                         File database = new File("./userdata/");
                         String[] dirs = database.list(); boolean flag = true;
                         for (String dir : dirs) {
@@ -48,37 +101,46 @@ public class App {
                         }
                         if (flag == true) {
                             File userdata = new File("./userdata/" + data[1]); userdata.mkdirs();
+                            // hash
                             userdata = new File("./userdata/" + data[1] + "/cred"); userdata.createNewFile();
-                            FileWriter writer = new FileWriter(userdata);
-                            writer.write(data[2]); writer.close();
+                            FileWriter writer = new FileWriter(userdata); writer.write(data[2]); writer.close();
+                            // base traits
                             userdata = new File("./userdata/" + data[1] + "/stat"); userdata.createNewFile();
                             writer = new FileWriter(userdata);
-                            writer.write("10\t40\t20"); writer.close();
-                            userdata = new File("./userdata/" + data[1] + "/item");
-                            userdata.createNewFile();
-
-                            userdata = new File("./userdata/" + data[1] + "/star");
-                            userdata.createNewFile();
+                            /* <-------- THIS NEEDS TO BE EDITED WHEN WE INTRODUCE ACTUAL TRAITS TO THE GAME -------------> */
+                            writer.write("10\t40\t20");
+                            /* <------------------------------------------------------------------------------------------> */
+                            writer.close();
+                            // init equiped items (meaning no equiped items at the start)
+                            userdata = new File("./userdata/" + data[1] + "/item"); userdata.createNewFile();
+                            // init 10 stars
+                            userdata = new File("./userdata/" + data[1] + "/star"); userdata.createNewFile();
+                            writer = new FileWriter(userdata); writer.write("10"); writer.close();
+                            // init 100 endurance
+                            userdata = new File("./userdata/" + data[1] + "/endu"); userdata.createNewFile();
+                            writer = new FileWriter(userdata); writer.write("100"); writer.close();
+                            // init 10 available relax sessions
+                            userdata = new File("./userdata/" + data[1] + "/sess"); userdata.createNewFile();
+                            writer = new FileWriter(userdata); writer.write("10"); writer.close();
+                            // init empty locker
+                            userdata = new File("./userdata/" + data[1] + "/lock"); userdata.createNewFile();
+                            // init shop
+                            userdata = new File("./userdata/" + data[1] + "/shop"); userdata.createNewFile();
                             writer = new FileWriter(userdata);
-                            writer.write("10"); writer.close();
-                            userdata = new File("./userdata/" + data[1] + "/endu");
-                            userdata.createNewFile();
-                            writer = new FileWriter(userdata);
-                            writer.write("58"); writer.close(); // default should be 100 // just for test purposes
-                            userdata = new File("./userdata/" + data[1] + "/sess");
-                            userdata.createNewFile();
-                            writer = new FileWriter(userdata);
-                            writer.write("10"); writer.close();
-                            userdata = new File("./userdata/" + data[1] + "/cash");
-                            userdata.createNewFile();
-                            writer = new FileWriter(userdata);
-                            writer.write("7.5"); writer.close();
+                            for (int m = 0; m < 4; m++) {
+                                if (m == 3) {writer.write(generateClothing());}
+                                else {writer.write(generateClothing()); writer.write("\n");}
+                            }
+                            writer.close();
+                            userdata = new File("./userdata/" + data[1] + "/cash"); userdata.createNewFile();
+                            writer = new FileWriter(userdata); writer.write("7.5"); writer.close();
+                            // init food item
+                            userdata = new File("./userdata/" + data[1] + "/food"); userdata.createNewFile();
+                            writer = new FileWriter(userdata); writer.write(generateFood()); writer.close();
                             out.println("REGISTER 0");
-
                         }
                     } else if (data[0].equals("FETCHSTARS")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Stars fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/star");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -93,7 +155,6 @@ public class App {
                         }
                     } else if (data[0].equals("FETCHENDURANCE")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Endurance fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/endu");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -109,8 +170,6 @@ public class App {
                         }
                     } else if (data[0].equals("FETCHSESSIONS")) {
                         try {
-                            System.out
-                                    .println("Client: " + clientSocket.getInetAddress() + " | Sessions fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/sess");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -125,7 +184,6 @@ public class App {
                         }
                     } else if (data[0].equals("FETCHCASH")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Cash fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/cash");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -140,7 +198,6 @@ public class App {
                         }
                     } else if (data[0].equals("FETCHSTATS")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Stats fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/stat");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -153,31 +210,45 @@ public class App {
                         } catch (Exception e) {
                             out.println("FETCHSTATS 1");
                         }
-                    } else if (data[0].equals("FETCHITEMS")) {
+                    }
+                    else if (data[0].equals("GENERATE_FOOD_ITEM")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Items fetch request");
-                            File userdata = new File("./userdata/" + data[1] + "/item");
-                            FileReader reader = new FileReader(userdata); int m; String temp = "";
-                            while ((m = reader.read()) != -1) {temp += (char) m;}
-                            out.println("FETCHITEMS 0 " + temp);
-                            reader.close();
-                        }
-                        catch (Exception e) {out.println("FETCHITEMS 1");}
-                    } else if (data[0].equals("CREATEITEM")) {
-                        try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Item create request");
-                            String temp = "Item_";
-                            for (int m = 0; m < 3; m++) {
-                                temp += App.random.nextInt(10);
-                            }
-                            temp += "\t" + App.random.nextInt(3) + "," + (App.random.nextInt(9) + 1);
-                            out.println("CREATEITEM 0 " + temp);
+                            
+                            Path path = Paths.get("./userdata/", data[1], "/food");
+                            List<String> lines = Files.readAllLines(path);
+                            String item = generateFood();
+                            lines.set(0, item);
+                            Files.write(path, lines);
+                            out.println("GENERATE_CLOTHING_ITEM 0 " + item);
                         } catch (Exception e) {
-                            out.println("CREATEITEM 1");
+                            out.println("GENERATE_CLOTHING_ITEM 1");
                         }
-                    } else if (data[0].equals("UseRelax")) {
+                    } else if (data[0].equals("GENERATE_CLOTHING_ITEM")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | UseRelax request");
+                            Path path = Paths.get("./userdata/", data[1], "/shop");
+                            List<String> lines = Files.readAllLines(path);
+                            String item = generateClothing();
+                            lines.set(Integer.parseInt(data[2]), item);
+                            Files.write(path, lines);
+                            out.println("GENERATE_CLOTHING_ITEM 0 " + item);
+                        } catch (Exception e) {
+                            out.println("GENERATE_CLOTHING_ITEM 1");
+                        }
+                    } else if (data[0].equals("FETCH_FOOD_ITEM")) {
+                        try {
+                            out.println("FETCH_FOOD_ITEM 0 " + fetchFood(data[1]));
+                        } catch (Exception e) {
+                            out.println("FETCH_FOOD_ITEM 1");
+                        }
+                    } else if (data[0].equals("FETCH_CLOTHING_ITEMS")) {
+                        try {
+                            out.println("FETCH_CLOTHING_ITEMS 0 " + fetchClothing(data[1]));
+                        } catch (Exception e) {
+                            out.println("FETCH_CLOTHING_ITEMS 1");
+                        }
+                    } 
+                    else if (data[0].equals("UseRelax")) {
+                        try {
                             String username = data[1];
 
                             // Fetch current values
@@ -209,7 +280,6 @@ public class App {
                                 out.println(
                                         "UseRelax 0 " + currentEndurance + " " + currentStars + " " + currentSessions);
                             } else {
-                                System.out.println("Not enough Stars or Sessions or too much Endurance");
                                 out.println("UseRelax 1");
                             }
                         } catch (Exception e) {
@@ -239,7 +309,6 @@ public class App {
 
                             out.println("STARTWORK 0");
                         } catch (Exception e) {
-                            System.out.println(e);
                             out.println("STARTWORK 1");
                         }
                     } else if (data[0].equals("CANCELWORK")) {
@@ -298,7 +367,7 @@ public class App {
                     }
                     clientSocket.close();
                 }
-                catch (Exception e) {System.err.println("Client handling error: " + e.getLocalizedMessage());}
+                catch (Exception e) {e.printStackTrace();}
             }
         }
         catch (Exception e) {System.err.println("Server error: " + e.getLocalizedMessage());}

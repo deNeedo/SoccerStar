@@ -3,23 +3,15 @@ public class Item {
     public int trait0;
     public int trait1;
     public int trait2;
-    public Item(string name, int trait0, int trait1, int trait2) {
-        this.name = name;
-        this.trait0 = trait0;
-        this.trait1 = trait1;
-        this.trait2 = trait2;
+    public string type;
+    public Item() {
+        name = ""; trait0 = 0; trait1 = 0; trait2 = 0; /* ... */
     }
-    public static void Create() {
-        NetworkManager.GenerateItem(PlayerManager.Get());
-    }
-
     override public string ToString() {
-        if (trait0 != 0) {
-            return "name: " + this.name + " trait0: " + this.trait0;
-        } else if (trait1 != 0) {
-            return "name: " + this.name + " trait1: " + this.trait1;
+        if (type == "food") {
+            return "name: " + name + "\ntrait0: " + trait0 + "%\ntrait1: " + trait1 + "%\ntrait2: " + trait2 + "%";
         } else {
-            return "name: " + this.name + " trait2: " + this.trait2;
+            return "name: " + name + "\ntrait0: " + trait0 + "\ntrait1: " + trait1 + "\ntrait2: " + trait2;
         }
     }
 }

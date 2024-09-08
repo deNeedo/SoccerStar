@@ -23,7 +23,7 @@ public class AuthManager : MonoBehaviour {
     }
     public void Validate() {
         if (username.Length >= 4 && username.Length <= 16 && password.Length >= 8) {
-            string hash = HashPassword((username + password));
+            string hash = HashPassword(username + password);
             if (GameManager.current_scene == "00_Login") {NetworkManager.Login(username, hash);}
             else if (GameManager.current_scene == "00_Register") {NetworkManager.Register(username, hash);}            
         } else {
