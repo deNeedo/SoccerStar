@@ -168,13 +168,16 @@ public class NetworkManager : MonoBehaviour
             }
         }
     public static Item GenerateFood(string username) {
+        Debug.Log("I am here");
         if (Connect() == true) {
             string message = "GENERATE_FOOD_ITEM " + username + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
+            Debug.Log("Data send");
             stream.Write(data, 0, data.Length);
             while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
             message = server_response.Split(' ')[2]; server_response = null;
-            return new();
+            Debug.Log("Data recieved");
+            return CreateItem(message);
         } else {return null;}
     }
     public static Item GenerateClothing(string username, int slot) {
@@ -188,6 +191,7 @@ public class NetworkManager : MonoBehaviour
         } else {return null;}
     }
     private static Item CreateItem(string data) {
+        Debug.Log(data);
         string[] temp = data.Split('_'); Item item = new(); int trait_id = 0;
         for (int m = 1; m < temp.Length; m++) {
             switch (m % 2) {
@@ -207,6 +211,7 @@ public class NetworkManager : MonoBehaviour
                     break;
             }
         }
+        item.type = temp[0]; 
         return item;
     }
     public static void FetchClothes(string username) {
@@ -221,6 +226,17 @@ public class NetworkManager : MonoBehaviour
             for (int m = 0; m < message2.Length; m++) {
                 ItemManager.SetClothing(CreateItem(message2[m]), m);
             }
+        }
+    }
+    public static void FetchFood(string username) {
+        bool flag = Connect();
+        if (flag == true) {
+            string message = "FETCH_FOOD_ITEM " + username + "\n";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            message = server_response.Split(' ')[2]; server_response = null;
+            ItemManager.SetFood(CreateItem(message));
         }
     }
 

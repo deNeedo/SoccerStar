@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 public class ItemManager : MonoBehaviour {
     private static readonly Item[] clothes = new Item[4];
     private static Item food;
@@ -16,7 +15,7 @@ public class ItemManager : MonoBehaviour {
         NetworkManager.FetchClothes(PlayerManager.GetName());
     }
     public static void FetchFood() {
-        // NetworkManager.FetchFood(PlayerManager.GetName());
+        NetworkManager.FetchFood(PlayerManager.GetName());
     }
     public static void SetClothing(Item item, int slot) {
         clothes[slot] = item;
@@ -26,5 +25,8 @@ public class ItemManager : MonoBehaviour {
     }
     public static Item GetClothing(int slot) {
         return clothes[slot];
+    }
+    public static Item GetFood() {
+        return food;
     }
 }

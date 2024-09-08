@@ -1,7 +1,8 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-public class ImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
+public class ImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
     public Image description_box;
     public Text description_text;
     public void Start() {
@@ -26,5 +27,12 @@ public class ImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     {
         description_box.gameObject.SetActive(false);
         description_text.text = "";
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right) {
+            Debug.Log("Purchased!");
+        }
     }
 }

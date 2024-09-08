@@ -5,6 +5,8 @@ public class GameManager : MonoBehaviour {
     public static void ChangeScene(string scene_name) {
         if (scene_name == "00_Login") {
             PlayerManager.Reset();
+        } else if (scene_name == "02_Food") {
+            ItemManager.FetchFood();
         } else if (scene_name == "03_Clothes") {
             ItemManager.FetchClothes();
         } else if (scene_name == "07_Wellness") {

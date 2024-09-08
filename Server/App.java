@@ -42,12 +42,16 @@ public class App {
         for (int m = 0; m < 3; m++) {
             item += App.random.nextInt(10);
         }
+        /* number of traits given clothing will boost */
+        int number_of_boosts = (int) Math.floor(1 + Math.random() * 2);
+        item += "_" + number_of_boosts;
         /* trait given food will boost and amount of boost in % */
-        /* ------------------------------------------------------------------------ */
-        item += "_" + (int) Math.floor(Math.random() * number_of_traits);
-        /* after rework it will reduce time from training instead of boosting trait */
-        item += "_" + (int) Math.floor(10 + Math.random() * 10);
+        for (int m = 0; m < number_of_boosts; m++) {
+            item += "_" + (int) Math.floor(Math.random() * number_of_traits);
+            item += "_" + (int) Math.floor(10 + Math.random() * 10);
+        }
         return item;
+        /* after rework it will reduce time from training instead of boosting trait */
     }
     private static String fetchClothing(String username) {
         String items = "";
@@ -96,7 +100,6 @@ public class App {
                             if (dir.equals(data[1])) {out.println("REGISTER 1"); flag = false;}
                         }
                         if (flag == true) {
-                            System.out.println("a");
                             File userdata = new File("./userdata/" + data[1]); userdata.mkdirs();
                             // hash
                             userdata = new File("./userdata/" + data[1] + "/cred"); userdata.createNewFile();
@@ -111,7 +114,6 @@ public class App {
                             // init equiped items (meaning no equiped items at the start)
                             userdata = new File("./userdata/" + data[1] + "/item"); userdata.createNewFile();
                             // init 10 stars
-                            System.out.println("aa");
                             userdata = new File("./userdata/" + data[1] + "/star"); userdata.createNewFile();
                             writer = new FileWriter(userdata); writer.write("10"); writer.close();
                             // init 100 endurance
@@ -136,8 +138,6 @@ public class App {
                             userdata = new File("./userdata/" + data[1] + "/food"); userdata.createNewFile();
                             writer = new FileWriter(userdata); writer.write(generateFood()); writer.close();
                             out.println("REGISTER 0");
-                            System.out.println("b");
-
                         }
                     } else if (data[0].equals("FETCHSTARS")) {
                         try {
@@ -170,8 +170,6 @@ public class App {
                         }
                     } else if (data[0].equals("FETCHSESSIONS")) {
                         try {
-                            System.out
-                                    .println("Client: " + clientSocket.getInetAddress() + " | Sessions fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/sess");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -186,7 +184,6 @@ public class App {
                         }
                     } else if (data[0].equals("FETCHCASH")) {
                         try {
-                            System.out.println("Client: " + clientSocket.getInetAddress() + " | Cash fetch request");
                             File userdata = new File("./userdata/" + data[1] + "/cash");
                             FileReader reader = new FileReader(userdata);
                             int m;
@@ -215,11 +212,16 @@ public class App {
                         }
                     }
                     else if (data[0].equals("GENERATE_FOOD_ITEM")) {
-                    } else if (data[0].equals("FETCHITEMS")) {
                         try {
-                            out.println("GENERATE_FOOD_ITEM 0 " + generateFood());
+                            
+                            Path path = Paths.get("./userdata/", data[1], "/food");
+                            List<String> lines = Files.readAllLines(path);
+                            String item = generateFood();
+                            lines.set(0, item);
+                            Files.write(path, lines);
+                            out.println("GENERATE_CLOTHING_ITEM 0 " + item);
                         } catch (Exception e) {
-                            out.println("GENERATE_FOOD_ITEM 1");
+                            out.println("GENERATE_CLOTHING_ITEM 1");
                         }
                     } else if (data[0].equals("GENERATE_CLOTHING_ITEM")) {
                         try {
@@ -307,7 +309,6 @@ public class App {
 
                             out.println("STARTWORK 0");
                         } catch (Exception e) {
-                            System.out.println(e);
                             out.println("STARTWORK 1");
                         }
                     } else if (data[0].equals("CANCELWORK")) {
