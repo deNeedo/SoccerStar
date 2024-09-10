@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -239,7 +240,6 @@ public class NetworkManager : MonoBehaviour
             ItemManager.SetFood(CreateItem(message));
         }
     }
-
     public static bool UseRelaxSession(string username) {
         if (Connect() == true) {
             string message = "UseRelax " + username + "\n";
@@ -315,7 +315,6 @@ public class NetworkManager : MonoBehaviour
         Debug.LogError("Couldn't connect.");
         return false;
     }
-
     public static bool CancelWork() {
         bool flag = NetworkManager.Connect();
         if (flag) {
@@ -331,7 +330,6 @@ public class NetworkManager : MonoBehaviour
             string[] response = NetworkManager.server_response.Split(' ');
             NetworkManager.server_response = null;
 
-            Debug.Log("response: " + response[0] + " " + response[1]);
             if (response[1].Trim() == "0") {
                 PlayerManager.SetEndTimeStr("");
                 PlayerManager.SetStartTimeStr("");
@@ -385,5 +383,127 @@ public class NetworkManager : MonoBehaviour
         }
         else Debug.Log("Connection Error");
     }
+    public static void FetchTraining(string username)
+    {
+        bool flag = NetworkManager.Connect();
+        if (flag == true)
+        {
+            string message = "FETCHTRAINING " + username + "\n";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            NetworkManager.stream.Write(data, 0, data.Length);
 
+            while (NetworkManager.server_response == null)
+            {
+                NetworkManager.ResponseCheck();
+                Thread.Sleep(10);
+            }
+
+            string[] temp = NetworkManager.server_response.Split(' ');
+            NetworkManager.server_response = null;
+
+            if (temp[1] == "0")
+            {
+                if (temp.Length > 10)
+                {
+                    StringBuilder trainingInfo = new StringBuilder();
+                    TrainingType[] trainings = new TrainingType[3];
+
+                    for (int j = 0, i = 2; i < temp.Length; i += 4)
+                    {
+                        string title = temp[i].Replace("|", " ");
+                        string description = temp[i + 1].Replace("|", " ");
+                        string trait = temp[i + 2];
+                        string endTimeStr = temp[i + 3];
+                        float.TryParse(endTimeStr, out float duration);
+
+
+
+                        trainings[j] = new TrainingType(title, description, duration);
+                        trainings[j].Trait = trait;
+                        trainingInfo.AppendLine($"Title: {title}, Description: {description}, Trait: {trait}, Duration: {duration}");
+                        j++;
+                    }
+                    PlayerManager.SetAvailableTrainings(trainings);
+                    // Debug.Log("Fetched Training Info:\n" + trainingInfo.ToString());
+                }
+                else
+                {
+                    string trainingTitle = temp[2].Replace("|", " ");
+                    string trainingDescription = temp[3].Replace("|", " ");
+                    string durationStr = temp[4];
+                    string endTimeStr = temp[5].Replace("|", " ");
+                    float.TryParse(durationStr, out float duration);
+
+                    TrainingType currentTraining = new TrainingType(trainingTitle, trainingDescription, duration);
+                    currentTraining.TrainingEndTime = endTimeStr;
+                    PlayerManager.SetCurrentTraining(currentTraining);
+                    // Debug.Log($"Ongoing Training Info:\nTitle: {trainingTitle}, Description: {trainingDescription}, Duration: {durationStr}, End Time: {endTimeStr}");
+                }
+            }
+            else
+            {
+                Debug.LogError("Failed to fetch training.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Connection error. Could not fetch training.");
+        }
+    }
+
+    public static bool StartTraining(string username, int trainingNumber) {
+        bool flag = NetworkManager.Connect();
+        if (flag) {
+            string message = "STARTTRAINING " + username + " " + trainingNumber + "\n";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            NetworkManager.stream.Write(data, 0, data.Length);
+
+            while (NetworkManager.server_response == null) {
+                NetworkManager.ResponseCheck();
+                Thread.Sleep(10);
+            }
+
+            string[] response = NetworkManager.server_response.Split(' ');
+            NetworkManager.server_response = null;
+
+            if (response[1] == "0") {
+                Debug.Log("Training started successfully.");
+                return true;
+            } else {
+                Debug.LogError("Failed to start training.");
+                return false;
+            }
+        } else {
+        Debug.LogError("Couldn't connect.");
+        return false;
+        }
+    }
+
+    public static bool StopTraining(string username) {
+        bool flag = NetworkManager.Connect();
+        if (flag) {
+            string message = "STOPTRAINING " + username + "\n";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            NetworkManager.stream.Write(data, 0, data.Length);
+
+            while (NetworkManager.server_response == null) {
+                NetworkManager.ResponseCheck();
+                Thread.Sleep(10);
+            }
+
+            string[] response = NetworkManager.server_response.Split(' ');
+            NetworkManager.server_response = null;
+
+            if (response[1].Trim() == "0") {
+                Debug.Log("Training stopped successfully.");
+                return true;
+            } else {
+                Debug.LogError("Failed to stop training.");
+                return false;
+            }
+        } else {
+            Debug.LogError("Couldn't connect.");
+            return false;
+        }
+    }
 }

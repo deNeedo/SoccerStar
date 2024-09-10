@@ -23,7 +23,13 @@ public class WorkManager : MonoBehaviour
 
     public void OnAcceptButtonClick()
     {
-        Debug.Log("end time: " + PlayerManager.GetEndTimeStr());
+        if (PlayerManager.IsTraining())
+        {
+            sliderValueText.text = "You can't work while training!";
+            Debug.LogError("Cannot start work: Player is currently training.");
+            return;
+        }
+
         if (PlayerManager.IsWorking())
         {
             if (NetworkManager.CancelWork())
@@ -88,14 +94,9 @@ public class WorkManager : MonoBehaviour
         string startTimeStr = PlayerManager.GetStartTimeStr().Trim();
         string endTimeStr = PlayerManager.GetEndTimeStr().Trim();
 
-        Debug.Log("Raw Start Time: " + startTimeStr);
-        Debug.Log("Raw End Time: " + endTimeStr);
-
         if (DateTime.TryParseExact(endTimeStr, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime endTime) &&
             DateTime.TryParseExact(startTimeStr, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime startTime))
         {
-            Debug.Log("Parsed End Time: " + endTime);
-            Debug.Log("Parsed Start Time: " + startTime);
 
             DateTime currentTime = DateTime.Now;
             TimeSpan timeRemaining = endTime - currentTime;
