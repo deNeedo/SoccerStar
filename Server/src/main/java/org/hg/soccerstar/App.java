@@ -1,3 +1,5 @@
+package org.hg.soccerstar;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import java.util.ArrayList;
-import java.util.List;
+// import java.util.List;
 import java.util.Arrays;
 import java.util.Collections;
 import java.io.IOException;
@@ -394,7 +396,7 @@ public class App {
                                 if (currentTime.isAfter(endTime)) {
 
                                     // Work completed, 
-                                    //TODO add cash pattern
+                                    // TODO add cash pattern
                                     double cashToAdd = ChronoUnit.HOURS
                                             .between(LocalDateTime.parse(startTimeStr, formatter), endTime) * 5;
 

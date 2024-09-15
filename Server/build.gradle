@@ -1,0 +1,28 @@
+plugins {
+	id 'application'
+}
+
+group = 'org.hg'
+version = '1.0'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	testImplementation libs.junit
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'org.hg.soccerstar.App'
+        )
+    }
+}
