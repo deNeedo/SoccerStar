@@ -242,7 +242,7 @@ public class NetworkManager : MonoBehaviour
     }
     public static bool UseRelaxSession(string username) {
         if (Connect() == true) {
-            string message = "UseRelax " + username + "\n";
+            string message = "USERELAX " + username + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
             stream.Write(data, 0, data.Length);
 

@@ -22,7 +22,7 @@ java {
 jar {
     manifest {
         attributes(
-            'Main-Class': 'org.hg.soccerstar.App'
+            'Main-Class': 'org.hg.soccerstar.Server'
         )
     }
 }
