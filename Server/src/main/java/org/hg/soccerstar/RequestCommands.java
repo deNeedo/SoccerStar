@@ -29,9 +29,15 @@ public class RequestCommands {
         for (int m = 0; m < 3; m++) {
             item += random.nextInt(10);
         }
+
+        /* price needed to buy an item (1.5 - 10.0)*/
+        double price = 1.5 + (Math.random() * (10.0 - 1.5));
+        item += "_" + String.format("%.2f", price);
+
         /* number of traits given clothing will boost */
         int number_of_boosts = (int) Math.floor(1 + Math.random() * 5);
         item += "_" + number_of_boosts;
+
         /* trait given clothing will boost and amount of boost (as a integer value) */
         for (int m = 0; m < number_of_boosts; m++) {
             item += "_" + (int) Math.floor(Math.random() * number_of_traits);
@@ -46,9 +52,15 @@ public class RequestCommands {
         for (int m = 0; m < 3; m++) {
             item += random.nextInt(10);
         }
+
+        /* price needed to buy an item (1.5 - 10.0)*/
+        double price = 1.5 + (Math.random() * (10.0 - 1.5));
+        item += "_" + String.format("%.2f", price);
+
         /* number of traits given clothing will boost */
         int number_of_boosts = (int) Math.floor(1 + Math.random() * 2);
         item += "_" + number_of_boosts;
+
         /* trait given food will boost and amount of boost in % */
         for (int m = 0; m < number_of_boosts; m++) {
             item += "_" + (int) Math.floor(Math.random() * number_of_traits);
@@ -61,6 +73,9 @@ public class RequestCommands {
     // Main Functions
     public static String login(String[] data) throws IOException {
         File database = new File("./userdata/");
+        if (!database.exists()) {
+            return "LOGIN 1 NoUserdataFile";
+        }
         String[] dirs = database.list();
         for (String dir : dirs) {
             if (dir.equals(data[1])) {
@@ -71,85 +86,87 @@ public class RequestCommands {
                 break;
             }
         }
-        return "LOGIN 1";
+        return "LOGIN 1 UserNotFound";
     }
+
     public static String register(String[] data) throws IOException {
         File database = new File("./userdata/");
+        if (!database.exists()) {
+            database.mkdirs();
+        }
+
         String[] dirs = database.list();
-        boolean flag = true;
         for (String dir : dirs) {
             if (dir.equals(data[1])) {
-                return "REGISTER 1";
+                return "REGISTER 1 UserAlreadyExists";
             }
         }
-        if (flag == true) {
-            File userdata = new File("./userdata/" + data[1]);
-            userdata.mkdirs();
-            // hash
-            userdata = new File("./userdata/" + data[1] + "/cred");
-            userdata.createNewFile();
-            FileWriter writer = new FileWriter(userdata);
-            writer.write(data[2]);
-            writer.close();
-            // base traits
-            userdata = new File("./userdata/" + data[1] + "/stat");
-            userdata.createNewFile();
-            writer = new FileWriter(userdata);
-            /* <-------- THIS NEEDS TO BE EDITED WHEN WE INTRODUCE ACTUAL TRAITS TO THE GAME -------------> */
-            writer.write("10\t40\t20\t10\t10\t10\t10\t10\t10\t10");
-            /* <------------------------------------------------------------------------------------------> */
-            writer.close();
-            // init equiped items (meaning no equiped items at the start)
-            userdata = new File("./userdata/" + data[1] + "/item");
-            userdata.createNewFile();
-            // init 10 stars
-            userdata = new File("./userdata/" + data[1] + "/star");
-            userdata.createNewFile();
-            writer = new FileWriter(userdata);
-            writer.write("10");
-            writer.close();
-            // init 100 endurance
-            userdata = new File("./userdata/" + data[1] + "/endu");
-            userdata.createNewFile();
-            writer = new FileWriter(userdata);
-            writer.write("100");
-            writer.close();
-            // init 10 available relax sessions
-            userdata = new File("./userdata/" + data[1] + "/sess");
-            userdata.createNewFile();
-            writer = new FileWriter(userdata);
-            writer.write("10");
-            writer.close();
-            // init empty locker
-            userdata = new File("./userdata/" + data[1] + "/lock");
-            userdata.createNewFile();
-            // init shop
-            userdata = new File("./userdata/" + data[1] + "/shop");
-            userdata.createNewFile();
-            writer = new FileWriter(userdata);
-            for (int m = 0; m < 4; m++) {
-                if (m == 3) {
-                    writer.write(generateClothing());
-                } else {
-                    writer.write(generateClothing());
-                    writer.write("\n");
-                }
+
+        File userdata = new File("./userdata/" + data[1]);
+        userdata.mkdirs();
+        // hash
+        userdata = new File("./userdata/" + data[1] + "/cred");
+        userdata.createNewFile();
+        FileWriter writer = new FileWriter(userdata);
+        writer.write(data[2]);
+        writer.close();
+        // base traits
+        userdata = new File("./userdata/" + data[1] + "/stat");
+        userdata.createNewFile();
+        writer = new FileWriter(userdata);
+        /* <-------- THIS NEEDS TO BE EDITED WHEN WE INTRODUCE ACTUAL TRAITS TO THE GAME -------------> */
+        writer.write("10\t40\t20\t10\t10\t10\t10\t10\t10\t10");
+        /* <------------------------------------------------------------------------------------------> */
+        writer.close();
+        // init equiped items (meaning no equiped items at the start)
+        userdata = new File("./userdata/" + data[1] + "/item");
+        userdata.createNewFile();
+        // init 10 stars
+        userdata = new File("./userdata/" + data[1] + "/star");
+        userdata.createNewFile();
+        writer = new FileWriter(userdata);
+        writer.write("10");
+        writer.close();
+        // init 100 endurance
+        userdata = new File("./userdata/" + data[1] + "/endu");
+        userdata.createNewFile();
+        writer = new FileWriter(userdata);
+        writer.write("100");
+        writer.close();
+        // init 10 available relax sessions
+        userdata = new File("./userdata/" + data[1] + "/sess");
+        userdata.createNewFile();
+        writer = new FileWriter(userdata);
+        writer.write("10");
+        writer.close();
+        // init empty locker
+        userdata = new File("./userdata/" + data[1] + "/lock");
+        userdata.createNewFile();
+        // init shop
+        userdata = new File("./userdata/" + data[1] + "/shop");
+        userdata.createNewFile();
+        writer = new FileWriter(userdata);
+        for (int m = 0; m < 4; m++) {
+            if (m == 3) {
+                writer.write(generateClothing());
+            } else {
+                writer.write(generateClothing());
+                writer.write("\n");
             }
-            writer.close();
-            userdata = new File("./userdata/" + data[1] + "/cash");
-            userdata.createNewFile();
-            writer = new FileWriter(userdata);
-            writer.write("7.5");
-            writer.close();
-            // init food item
-            userdata = new File("./userdata/" + data[1] + "/food");
-            userdata.createNewFile();
-            writer = new FileWriter(userdata);
-            writer.write(generateFood());
-            writer.close();
-            return "REGISTER 0";
         }
-        return "REGISTER 1";
+        writer.close();
+        userdata = new File("./userdata/" + data[1] + "/cash");
+        userdata.createNewFile();
+        writer = new FileWriter(userdata);
+        writer.write("7.5");
+        writer.close();
+        // init food item
+        userdata = new File("./userdata/" + data[1] + "/food");
+        userdata.createNewFile();
+        writer = new FileWriter(userdata);
+        writer.write(generateFood());
+        writer.close();
+        return "REGISTER 0";
     }
     public static String fetchStars(String[] data)  {
         try {

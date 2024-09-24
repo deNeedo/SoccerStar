@@ -194,21 +194,21 @@ public class NetworkManager : MonoBehaviour
     private static Item CreateItem(string data) {
         Debug.Log(data);
         string[] temp = data.Split('_'); Item item = new(); int trait_id = 0;
-        for (int m = 1; m < temp.Length; m++) {
+        item.name = temp[1];
+        item.price = double.Parse(temp[2]);
+
+        for (int m = 4; m < temp.Length; m++) {
+            Debug.Log(temp[m].ToString() + " " + m);
             switch (m % 2) {
                 case 0:
-                    if (m == 2) {continue;}
-                    else {
-                        switch (trait_id) {
-                            case 0: item.trait0 += int.Parse(temp[m]); break;
-                            case 1: item.trait1 += int.Parse(temp[m]); break;
-                            case 2: item.trait2 += int.Parse(temp[m]); break;
-                        }
-                    }
+                    trait_id = int.Parse(temp[m]);
                     break;
                 case 1:
-                    if (m == 1) {item.name = temp[m];}
-                    else {trait_id = int.Parse(temp[m]);}
+                    switch (trait_id) {
+                        case 0: item.trait0 += int.Parse(temp[m]); break;
+                        case 1: item.trait1 += int.Parse(temp[m]); break;
+                        case 2: item.trait2 += int.Parse(temp[m]); break;
+                    }
                     break;
             }
         }
