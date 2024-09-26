@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -63,7 +64,7 @@ public class NetworkManager : MonoBehaviour
                 FetchEndurance(temp[2]);
                 FetchSessions(temp[2]);
                 FetchCash(temp[2]);
-                // FetchLockerItems(temp[2]);
+                FetchLockerItems(temp[2]);
                 PlayerManager.SetName(temp[2]);
                 GameManager.ChangeScene("01_Profile");
             }
@@ -162,22 +163,19 @@ public class NetworkManager : MonoBehaviour
                 {
                     double cash = double.Parse(response[2]);
                     PlayerManager.SetCash(cash);
-                    Debug.Log("Cash fetched successfully.");
+                    // Debug.Log("Cash fetched successfully.");
                 } else {
                     Debug.LogError("Failed to fetch cash.");
                 }
             }
         }
     public static Item GenerateFood(string username) {
-        Debug.Log("I am here");
         if (Connect() == true) {
             string message = "GENERATE_FOOD_ITEM " + username + "\n";
             byte[] data = Encoding.UTF8.GetBytes(message);
-            Debug.Log("Data send");
             stream.Write(data, 0, data.Length);
             while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
             message = server_response.Split(' ')[2]; server_response = null;
-            Debug.Log("Data recieved");
             return CreateItem(message);
         } else {return null;}
     }
@@ -191,14 +189,28 @@ public class NetworkManager : MonoBehaviour
             return CreateItem(message);
         } else {return null;}
     }
+    public static bool BuyClothing(string username, int slot) {
+        if (Connect() == true) {
+            string message = "BUY_CLOTHING_ITEM " + username + " " + slot + "\n";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            string[] response = server_response.Split(' '); server_response = null;
+
+            if (response[1] == "0")
+                return true;
+            else
+                return false;
+                
+        } else {return false;}
+    }
     private static Item CreateItem(string data) {
-        Debug.Log(data);
+        // Debug.Log(data);
         string[] temp = data.Split('_'); Item item = new(); int trait_id = 0;
         item.name = temp[1];
         item.price = double.Parse(temp[2]);
 
         for (int m = 4; m < temp.Length; m++) {
-            Debug.Log(temp[m].ToString() + " " + m);
             switch (m % 2) {
                 case 0:
                     trait_id = int.Parse(temp[m]);
@@ -240,6 +252,25 @@ public class NetworkManager : MonoBehaviour
             ItemManager.SetFood(CreateItem(message));
         }
     }
+    public static void FetchLockerItems(string username) {
+        bool flag = Connect();
+        if (flag == true) {
+            string message = "FETCHLOCKERITEMS " + username + "\n";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
+            string[] temp = server_response.Split(' ');
+            server_response = null;
+          
+            for (int i = 2; i < temp.Length; i++) {
+                Item item = CreateItem(temp[i]);
+                PlayerManager.SetLockerItem(i - 2, item);
+            }
+        }
+        else {
+            Debug.Log("coudn't fetch locker items");
+        }
+    }
     public static bool UseRelaxSession(string username) {
         if (Connect() == true) {
             string message = "USERELAX " + username + "\n";
@@ -273,20 +304,7 @@ public class NetworkManager : MonoBehaviour
         }
         return false;
     }
-    public static void FetchLockerItems(string username) {
-        bool flag = Connect();
-        if (flag == true) {
-            string message = "FETCHLOCKER " + username + "\n";
-            byte[] data = Encoding.UTF8.GetBytes(message);
-            stream.Write(data, 0, data.Length);
-            while (server_response == null) {ResponseCheck(); Thread.Sleep(10);}
-            string[] temp = server_response.Split(' ');
-            server_response = null;
-            if (temp[1] == "0") {
-                
-            }
-        }
-    }
+
     public static bool StartWork(int hours) {
         bool flag = NetworkManager.Connect();
         if (flag) {

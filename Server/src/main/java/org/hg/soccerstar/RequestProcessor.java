@@ -28,6 +28,10 @@ public class RequestProcessor {
                 return RequestCommands.fetchFood(data);
             case "FETCH_CLOTHING_ITEMS":
                 return RequestCommands.fetchClothing(data);
+            case "FETCHLOCKERITEMS":
+                return RequestCommands.fetchLockerItems(data);
+            case "BUY_CLOTHING_ITEM":
+                return RequestCommands.buyClothingItem(data);
             case "USERELAX":
                 return RequestCommands.useRelax(data);
             case "STARTWORK":
