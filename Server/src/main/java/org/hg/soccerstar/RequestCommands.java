@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -215,6 +216,7 @@ public class RequestCommands {
             return "GENERATE_CLOTHING_ITEM 1";
         }
     }
+
     public static String generateClothingItem(String[] data) throws IOException {
         try {
             Path path = Paths.get("./userdata/", data[1], "/shop");
@@ -227,6 +229,73 @@ public class RequestCommands {
             return "GENERATE_CLOTHING_ITEM 1";
         }
     }
+
+    public static String buyClothingItem(String[] data) {
+        try {
+            String username = data[1];
+            int slot = Integer.parseInt(data[2]);
+
+            List<String> shopItems = FileHandler.fetchShopItems(username);
+            if (slot >= shopItems.size()) {
+                return "BUY_CLOTHING_ITEM 1 InvalidSlot";
+            }
+
+            String itemData = shopItems.get(slot);
+            String[] itemParts = itemData.split("_");
+            double itemPrice = Double.parseDouble(itemParts[2]);
+
+            double playerCash = Double.parseDouble(FileHandler.fetchCash(username));
+            if (playerCash < itemPrice) {
+                return "BUY_CLOTHING_ITEM 1 NotEnoughCash";
+            }
+
+            List<String> lockerItems = FileHandler.fetchLockerItems(username);
+
+            boolean itemPlaced = false;
+            // TODO change 4 to locker max value
+            for (int i = 0; i < 4; i++) {
+                if (lockerItems.get(i).isEmpty()) {
+                    lockerItems.set(i, itemData);
+                    itemPlaced = true;
+                    break;
+                }
+            }
+
+            if (!itemPlaced) {
+                // System.out.println("LockerFull");
+                return "BUY_CLOTHING_ITEM 1 LockerFull";
+            }
+
+            double newCashAmount = playerCash - itemPrice;
+            FileHandler.editCash(username, newCashAmount);
+
+            FileHandler.editLocker(username, lockerItems);
+
+            String newItem = generateClothing();
+            shopItems.set(slot, newItem);
+            FileHandler.editClothing(username, shopItems);
+
+            return "BUY_CLOTHING_ITEM 0";
+        } catch (Exception e) {
+            System.out.println(e);
+            return "BUY_CLOTHING_ITEM 1 ";
+        }
+    }
+
+    public static String fetchLockerItems(String[] data) throws IOException {
+        try {
+            List<String> lockerItems = FileHandler.fetchLockerItems(data[1]);
+
+            StringBuilder response = new StringBuilder("FETCHLOCKERITEMS 0 ");
+            for (String item : lockerItems) {
+                response.append(item).append(" ");
+            }
+            return response.toString();
+        } catch (Exception e) {
+            return "FETCHLOCKERITEMS 1";
+        }
+    }
+    
     public static String fetchFood(String[] data) {
         try {
             return "FETCHFOOD 0 " + FileHandler.fetchFood(data[1]);
