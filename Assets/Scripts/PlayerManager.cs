@@ -104,6 +104,8 @@ public class PlayerManager : MonoBehaviour {
     public static Item GetLockerItem(int place) {
         return locker[place];
     }
+
+
     public static bool IsWorking() {
         return !string.IsNullOrEmpty(endWorkTimeStr);
     }

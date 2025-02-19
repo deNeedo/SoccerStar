@@ -1,3 +1,5 @@
+package org.hg.soccerstar;
+
 import java.util.Calendar;
 import java.io.File;
 import java.io.FileWriter;
@@ -11,7 +13,6 @@ public class NewDayDetector extends Thread {
             catch (Exception e) {System.out.println(e.getLocalizedMessage());}
             this.newDayReset();
         }
-
     }
     private void newDayReset() {
         File database = new File("./userdata/");
@@ -37,6 +38,6 @@ public class NewDayDetector extends Thread {
         if (now.after(midnight)) {
             midnight.add(Calendar.DAY_OF_MONTH, 1);
         }
-        return midnight.getTimeInMillis() - now.getTimeInMillis();
+        return (midnight.getTimeInMillis() - now.getTimeInMillis());
     }
 }
