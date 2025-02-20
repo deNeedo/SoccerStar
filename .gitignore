@@ -79,7 +79,7 @@ userdata
 *.class
 
 # Config files
-*.config
+App.config
 *.config.meta
 
 # Visual Studio Code
