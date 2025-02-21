@@ -2,7 +2,6 @@ plugins {
 	id 'application'
 }
 
-group = 'org.hg'
 version = '1.0'
 
 repositories {
@@ -22,7 +21,7 @@ java {
 jar {
     manifest {
         attributes(
-            'Main-Class': 'org.hg.soccerstar.Server'
+            'Main-Class': 'soccerstar.Server'
         )
     }
 }

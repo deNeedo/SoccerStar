@@ -1,4 +1,3 @@
-package org.hg.soccerstar;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -6,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,8 +18,8 @@ import java.util.List;
 import java.util.Random;
 
 public class RequestCommands {
-    private static Random random = new Random();
-    private static final int number_of_traits = 3;
+    final private static Random random = new Random();
+    private static final int NUMBER_OF_TRAITS = 3;
 
     // Helpers
     private static String generateClothing() {
@@ -41,7 +39,7 @@ public class RequestCommands {
 
         /* trait given clothing will boost and amount of boost (as a integer value) */
         for (int m = 0; m < number_of_boosts; m++) {
-            item += "_" + (int) Math.floor(Math.random() * number_of_traits);
+            item += "_" + (int) Math.floor(Math.random() * NUMBER_OF_TRAITS);
             item += "_" + (int) Math.floor(1 + Math.random() * 10);
         }
         return item;
@@ -64,7 +62,7 @@ public class RequestCommands {
 
         /* trait given food will boost and amount of boost in % */
         for (int m = 0; m < number_of_boosts; m++) {
-            item += "_" + (int) Math.floor(Math.random() * number_of_traits);
+            item += "_" + (int) Math.floor(Math.random() * NUMBER_OF_TRAITS);
             item += "_" + (int) Math.floor(10 + Math.random() * 10);
         }
         return item;
@@ -172,35 +170,35 @@ public class RequestCommands {
     public static String fetchStars(String[] data)  {
         try {
             return "FETCHSTARS 0 " + FileHandler.fetchStars(data[1]);
-        } catch (Exception e) {
+        } catch (IOException e) {
             return "FETCHSTARS 1";
         }
     }
     public static String fetchEndurance(String[] data) throws IOException {
         try {
             return "FETCHENDURANCE 0 " + FileHandler.fetchEndurance(data[1]);
-        } catch (Exception e) {
+        } catch (IOException e) {
             return "FETCHENDURANCE 1";
         }
     }
     public static String fetchSessions(String[] data) throws IOException {
         try {
             return "FETCHSESSIONS 0 " + FileHandler.fetchSessions(data[1]);
-        } catch (Exception e) {
+        } catch (IOException e) {
             return "FETCHSESSIONS 1";
         }
     }
     public static String fetchCash(String[] data) throws IOException {
         try {
             return "FETCHCASH 0 " + FileHandler.fetchCash(data[1]);
-        } catch (Exception e) {
+        } catch (IOException e) {
             return "FETCHCASH 1";
         }
     }
     public static String fetchStats(String[] data) throws IOException {
         try {
             return "FETCHSTATS 0 " + FileHandler.fetchStats(data[1]);
-        } catch (Exception e) {
+        } catch (IOException e) {
             return "FETCHSTATS 1";
         }
     }
@@ -212,7 +210,7 @@ public class RequestCommands {
             lines.set(0, item);
             Files.write(path, lines);
             return "GENERATE_CLOTHING_ITEM 0 " + item;
-        } catch (Exception e) {
+        } catch (IOException e) {
             return "GENERATE_CLOTHING_ITEM 1";
         }
     }
@@ -225,7 +223,7 @@ public class RequestCommands {
             lines.set(Integer.parseInt(data[2]), item);
             Files.write(path, lines);
             return "GENERATE_CLOTHING_ITEM 0 " + item;
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             return "GENERATE_CLOTHING_ITEM 1";
         }
     }
@@ -276,7 +274,7 @@ public class RequestCommands {
             FileHandler.editClothing(username, shopItems);
 
             return "BUY_CLOTHING_ITEM 0";
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             System.out.println(e);
             return "BUY_CLOTHING_ITEM 1 ";
         }
@@ -291,7 +289,7 @@ public class RequestCommands {
                 response.append(item).append(" ");
             }
             return response.toString();
-        } catch (Exception e) {
+        } catch (IOException e) {
             return "FETCHLOCKERITEMS 1";
         }
     }
@@ -299,14 +297,14 @@ public class RequestCommands {
     public static String fetchFood(String[] data) {
         try {
             return "FETCHFOOD 0 " + FileHandler.fetchFood(data[1]);
-        } catch (Exception e) {
+        } catch (IOException e) {
             return "FETCHFOOD 1";
         }
     }
     public static String fetchClothing(String[] data) throws IOException {
         try {
             return "FETCHCLOTHING 0 " + FileHandler.fetchClothing(data[1]);
-        } catch (Exception e) {
+        } catch (IOException e) {
             return "FETCHCLOTHING 1";
         }
     }
@@ -337,7 +335,7 @@ public class RequestCommands {
             } else {
                 return "USERELAX 1";
             }
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             return "USERELAX 1";
         }
     }
@@ -365,10 +363,9 @@ public class RequestCommands {
             String endTimeFormatted = endTime.format(formatter);
 
             File workFile = new File("./userdata/" + username + "/work");
-            FileWriter writer = new FileWriter(workFile);
-            writer.write(startTimeFormatted + "\n" + endTimeFormatted);
-            writer.close();
-
+            try (FileWriter writer = new FileWriter(workFile)) {
+                writer.write(startTimeFormatted + "\n" + endTimeFormatted);
+            }
             return "STARTWORK 0";
         } catch (Exception e) {
             return "STARTWORK 1";
@@ -397,11 +394,12 @@ public class RequestCommands {
             File workFile = new File("./userdata/" + username + "/work");
 
             if (workFile.exists()) {
-                BufferedReader reader = new BufferedReader(new FileReader(workFile));
-                String startTimeStr = reader.readLine();
-                String endTimeStr = reader.readLine();
-                reader.close();
-
+                String startTimeStr;
+                String endTimeStr;
+                try (BufferedReader reader = new BufferedReader(new FileReader(workFile))) {
+                    startTimeStr = reader.readLine();
+                    endTimeStr = reader.readLine();
+                }
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime endTime = LocalDateTime.parse(endTimeStr, formatter);
                 LocalDateTime currentTime = LocalDateTime.now();
@@ -431,7 +429,7 @@ public class RequestCommands {
             } else {
                 return "CHECKWORK 1";
             }
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             return "CHECKWORK 1";
         }
     }
@@ -450,52 +448,55 @@ public class RequestCommands {
                 return "STARTTRAINING 1 PlayerIsTraining";
             }
 
-            BufferedReader currentTrainingReader = new BufferedReader(
-                    new FileReader(new File("./userdata/" + username + "/trai")));
-            String[] trainings = new String[3];
-            for (int i = 0; i < 3; i++) {
-                trainings[i] = currentTrainingReader.readLine();
+            String[] trainings;
+            try (BufferedReader currentTrainingReader = new BufferedReader(
+                    new FileReader(new File("./userdata/" + username + "/trai")))) {
+                trainings = new String[3];
+                for (int i = 0; i < 3; i++) {
+                    trainings[i] = currentTrainingReader.readLine();
+                }
             }
-            currentTrainingReader.close();
 
             ClassLoader classLoader = RequestCommands.class.getClassLoader();
             InputStream trainingFileStream = classLoader.getResourceAsStream("trainings/" + trainings[trainingNumber]);
-            BufferedReader trainingsReader = new BufferedReader(new InputStreamReader(trainingFileStream));
-            trainingsReader.readLine();
-            trainingsReader.readLine();
-            String traitAddStr = trainingsReader.readLine();
-            String durationStr = trainingsReader.readLine();
-            trainingsReader.close();
+            String traitAddStr;
+            String durationStr;
+            try (BufferedReader trainingsReader = new BufferedReader(new InputStreamReader(trainingFileStream))) {
+                trainingsReader.readLine();
+                trainingsReader.readLine();
+                traitAddStr = trainingsReader.readLine();
+                durationStr = trainingsReader.readLine();
+            }
 
             int traitAdd = Integer.parseInt(traitAddStr);
             int enduranceCost = traitAdd * 10;
 
             File enduranceFile = new File("./userdata/" + username + "/endu");
-            BufferedReader enduranceReader = new BufferedReader(new FileReader(enduranceFile));
-            int endurance = Integer.parseInt(enduranceReader.readLine());
-            enduranceReader.close();
+            int endurance;
+            try (BufferedReader enduranceReader = new BufferedReader(new FileReader(enduranceFile))) {
+                endurance = Integer.parseInt(enduranceReader.readLine());
+            }
 
             if (endurance < enduranceCost) {
                 return "STARTTRAINING 1 NotEnoughEndurance";
             }
 
             endurance -= enduranceCost;
-            FileWriter enduranceWriter = new FileWriter(enduranceFile);
-            enduranceWriter.write(String.valueOf(endurance));
-            enduranceWriter.close();
+            try (FileWriter enduranceWriter = new FileWriter(enduranceFile)) {
+                enduranceWriter.write(String.valueOf(endurance));
+            }
 
             LocalDateTime startTime = LocalDateTime.now();
             LocalDateTime endTime = startTime.plusMinutes(Integer.parseInt(durationStr));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String endTimeFormatted = endTime.format(formatter);
 
-            FileWriter writer = new FileWriter(new File("./userdata/" + username + "/curr_trai"));
-
-            writer.write(trainings[trainingNumber] + "\n" + durationStr + "\n" + endTimeFormatted);
-            writer.close();
+            try (FileWriter writer = new FileWriter(new File("./userdata/" + username + "/curr_trai"))) {
+                writer.write(trainings[trainingNumber] + "\n" + durationStr + "\n" + endTimeFormatted);
+            }
 
             return "STARTTRAINING 0";
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             return "STARTTRAINING 1";
         }
     }
@@ -505,37 +506,40 @@ public class RequestCommands {
             File trainingFile = new File("./userdata/" + username + "/curr_trai");
 
             if (trainingFile.exists()) {
-                BufferedReader trainingReader = new BufferedReader(new FileReader(trainingFile));
-                String trainingTitle = trainingReader.readLine();
-                trainingReader.close();
+                String trainingTitle;
+                try (BufferedReader trainingReader = new BufferedReader(new FileReader(trainingFile))) {
+                    trainingTitle = trainingReader.readLine();
+                }
 
                 ClassLoader classLoader = RequestCommands.class.getClassLoader();
                 InputStream trainingFileStream = classLoader.getResourceAsStream("trainings/" + trainingTitle);
-                BufferedReader trainingsReader = new BufferedReader(new InputStreamReader(trainingFileStream));
-                trainingsReader.readLine();
-                trainingsReader.readLine();
-                String traitAddStr = trainingsReader.readLine();
-                trainingsReader.close();
+                String traitAddStr;
+                try (BufferedReader trainingsReader = new BufferedReader(new InputStreamReader(trainingFileStream))) {
+                    trainingsReader.readLine();
+                    trainingsReader.readLine();
+                    traitAddStr = trainingsReader.readLine();
+                }
 
                 int traitAdd = Integer.parseInt(traitAddStr);
                 int enduranceRestore = traitAdd * 10;
 
                 File enduranceFile = new File("./userdata/" + username + "/endu");
-                BufferedReader enduranceReader = new BufferedReader(new FileReader(enduranceFile));
-                int endurance = Integer.parseInt(enduranceReader.readLine());
-                enduranceReader.close();
+                int endurance;
+                try (var enduranceReader = new BufferedReader(new FileReader(enduranceFile))) {
+                    endurance = Integer.parseInt(enduranceReader.readLine());
+                }
 
                 endurance += enduranceRestore;
-                FileWriter enduranceWriter = new FileWriter(enduranceFile);
-                enduranceWriter.write(String.valueOf(endurance));
-                enduranceWriter.close();
+                try (FileWriter enduranceWriter = new FileWriter(enduranceFile)) {
+                    enduranceWriter.write(String.valueOf(endurance));
+                }
 
                 trainingFile.delete();
                 return "STOPTRAINING 0";
             } else {
                 return "STOPTRAINING 1 NotTraining";
             }
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             return "STOPTRAINING 1";
         }
     }
@@ -546,20 +550,26 @@ public class RequestCommands {
             File availableTrainings = new File("./userdata/" + username + "/trai");
             
             if (currentTraining.exists()) {
-                BufferedReader reader = new BufferedReader(new FileReader(currentTraining));
-                String trainingFileStr = reader.readLine();
-                String durationStr = reader.readLine();
-                String endTimeStr = reader.readLine();
-                reader.close();
+                String trainingFileStr;
+                String durationStr;
+                String endTimeStr;
+                try (BufferedReader reader = new BufferedReader(new FileReader(currentTraining))) {
+                    trainingFileStr = reader.readLine();
+                    durationStr = reader.readLine();
+                    endTimeStr = reader.readLine();
+                }
 
                 ClassLoader classLoader = RequestCommands.class.getClassLoader();
                 InputStream trainingFileStream = classLoader.getResourceAsStream("trainings/" + trainingFileStr);
-                BufferedReader trainingReader = new BufferedReader(new InputStreamReader(trainingFileStream));
-                String trainingTitle = trainingReader.readLine().replaceAll(" ", "|");
-                String trainingDescription = trainingReader.readLine().replaceAll(" ", "|");
-                String traitStr = trainingReader.readLine();
-                int trait = Integer.parseInt(traitStr);
-                trainingReader.close();
+                String trainingTitle;
+                String trainingDescription;
+                int trait;
+                try (BufferedReader trainingReader = new BufferedReader(new InputStreamReader(trainingFileStream))) {
+                    trainingTitle = trainingReader.readLine().replaceAll(" ", "|");
+                    trainingDescription = trainingReader.readLine().replaceAll(" ", "|");
+                    String traitStr = trainingReader.readLine();
+                    trait = Integer.parseInt(traitStr);
+                }
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime endTime = LocalDateTime.parse(endTimeStr, formatter);
@@ -570,9 +580,10 @@ public class RequestCommands {
                 }
                 
                 File statsFile = new File("./userdata/" + username + "/stat");
-                BufferedReader statReader = new BufferedReader(new FileReader(statsFile));
-                String stats = statReader.readLine();
-                statReader.close();
+                String stats;
+                try (BufferedReader statReader = new BufferedReader(new FileReader(statsFile))) {
+                    stats = statReader.readLine();
+                }
 
                 String[] statStrings = stats.split("\t");
                 int[] statInts = new int[statStrings.length];
@@ -580,39 +591,17 @@ public class RequestCommands {
                     statInts[i] = Integer.parseInt(statStrings[i]);
                 }
                 switch (trainingFileStr) {
-                    case "dribbling":
-                        statInts[0] += trait;
-                        break;
-                    case "fitness":
-                        statInts[1] += trait;
-                        break;
-                    case "kicking":
-                        statInts[2] += trait;
-                        break;
-                    case "marking":
-                        statInts[3] += trait;
-                        break;
-                    case "passing":
-                        statInts[4] += trait;
-                        break;
-                    case "reflex":
-                        statInts[5] += trait;
-                        break;
-                    case "shooting":
-                        statInts[6] += trait;
-                        break;
-                    case "speed":
-                        statInts[7] += trait;
-                        break;
-                    case "tackling":
-                        statInts[8] += trait;
-                        break;
-                    case "throwing":
-                        statInts[9] += trait;
-                        break;
-                    default:
-                        System.out.println("Unknown training type: " + trainingFileStr);
-                        break;
+                    case "dribbling" -> statInts[0] += trait;
+                    case "fitness" -> statInts[1] += trait;
+                    case "kicking" -> statInts[2] += trait;
+                    case "marking" -> statInts[3] += trait;
+                    case "passing" -> statInts[4] += trait;
+                    case "reflex" -> statInts[5] += trait;
+                    case "shooting" -> statInts[6] += trait;
+                    case "speed" -> statInts[7] += trait;
+                    case "tackling" -> statInts[8] += trait;
+                    case "throwing" -> statInts[9] += trait;
+                    default -> System.out.println("Unknown training type: " + trainingFileStr);
                 }
 
                 StringBuilder updatedStats = new StringBuilder();
@@ -623,9 +612,9 @@ public class RequestCommands {
                     }
                 }
 
-                FileWriter statWriter = new FileWriter(statsFile);
-                statWriter.write(updatedStats.toString());
-                statWriter.close();
+                try (FileWriter statWriter = new FileWriter(statsFile)) {
+                    statWriter.write(updatedStats.toString());
+                }
 
                 currentTraining.delete();
                 availableTrainings.delete();
@@ -635,19 +624,20 @@ public class RequestCommands {
                 List<String> trainingList = Arrays.asList(trainingFiles);
                 Collections.shuffle(trainingList);
 
-                FileWriter fileWriter = new FileWriter(availableTrainings);
-                fileWriter.write(
-                        trainingList.get(0) + "\n" + trainingList.get(1) + "\n" + trainingList.get(2));
-                fileWriter.close();
+                try (FileWriter fileWriter = new FileWriter(availableTrainings)) {
+                    fileWriter.write(
+                            trainingList.get(0) + "\n" + trainingList.get(1) + "\n" + trainingList.get(2));
+                }
 
                 return "FETCHTRAINING 0 " + FileHandler.fetchTrainingData(trainingList.subList(0, 3));
             } else if (availableTrainings.exists()) {
-                BufferedReader reader_trai = new BufferedReader(new FileReader(availableTrainings));
-                List<String> trainingFiles = new ArrayList<>();
-                trainingFiles.add(reader_trai.readLine());
-                trainingFiles.add(reader_trai.readLine());
-                trainingFiles.add(reader_trai.readLine());
-                reader_trai.close();
+                List<String> trainingFiles;
+                try (BufferedReader reader_trai = new BufferedReader(new FileReader(availableTrainings))) {
+                    trainingFiles = new ArrayList<>();
+                    trainingFiles.add(reader_trai.readLine());
+                    trainingFiles.add(reader_trai.readLine());
+                    trainingFiles.add(reader_trai.readLine());
+                }
 
                 return "FETCHTRAINING 0 " + FileHandler.fetchTrainingData(trainingFiles);
             } else {
@@ -656,16 +646,15 @@ public class RequestCommands {
                 List<String> trainingList = Arrays.asList(trainingFiles);
                 Collections.shuffle(trainingList);
 
-                FileWriter fileWriter = new FileWriter(availableTrainings);
-                fileWriter.write(
-                        trainingList.get(0) + "\n" + trainingList.get(1) + "\n" + trainingList.get(2));
-                fileWriter.close();
+                try (FileWriter fileWriter = new FileWriter(availableTrainings)) {
+                    fileWriter.write(
+                            trainingList.get(0) + "\n" + trainingList.get(1) + "\n" + trainingList.get(2));
+                }
 
                 return "FETCHTRAINING 0 " + FileHandler.fetchTrainingData(trainingList.subList(0, 3));
             }
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             return "FETCHTRAINING 1 :";
         }
     }
-
 }

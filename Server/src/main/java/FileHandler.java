@@ -1,21 +1,19 @@
-package org.hg.soccerstar;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileHandler {
     private static String fetchFileContent(String username, String fileName) throws FileNotFoundException, IOException {
-        String content = "";
+        String content;
         File file = new File("./userdata/" + username + "/" + fileName);
         try (FileReader reader = new FileReader(file)) {
             int m;

@@ -1,4 +1,3 @@
-package org.hg.soccerstar;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,7 +6,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 class ClientHandler implements Runnable {
-    private Socket clientSocket;
+    final private Socket clientSocket;
 
     public ClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
@@ -15,17 +14,17 @@ class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-        try (
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true)
-        ) {
-            String message = in.readLine();
+        BufferedReader reader; PrintWriter writer;
+        try {
+            reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
+            String message = reader.readLine();
             String[] data = message.split(" ");
             String response = RequestProcessor.processRequest(data);
             // System.out.println(response);
-            out.println(response);
+            writer.println(response);
         } catch (IOException e) {
-            e.printStackTrace();
+            
         }
     }
 }
