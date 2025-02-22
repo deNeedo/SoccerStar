@@ -1,9 +1,7 @@
-using System;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 public class AuthManager : MonoBehaviour {
     private string username;
     private string password;
@@ -12,14 +10,14 @@ public class AuthManager : MonoBehaviour {
     public void OnUsernameFieldValueChange(string newValue) {username = newValue;}
     public void OnPasswordFieldValueChange(string newValue) {password = newValue;}
     public string HashPassword(string password) {
-        using (SHA256 sha256 = SHA256.Create()) {
-            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            StringBuilder builder = new StringBuilder();
-            for (int m = 0; m < bytes.Length; m++) {
-                builder.Append(bytes[m].ToString("x2"));
-            }
-            return builder.ToString();
+        SHA256 sha256 = SHA256.Create();
+        byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+        StringBuilder builder = new();
+        for (int m = 0; m < bytes.Length; m++)
+        {
+            builder.Append(bytes[m].ToString("x2"));
         }
+        return builder.ToString();
     }
     public void Validate() {
         if (username.Length >= 4 && username.Length <= 16 && password.Length >= 8) {

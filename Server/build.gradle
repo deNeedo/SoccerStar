@@ -21,7 +21,7 @@ java {
 jar {
     manifest {
         attributes(
-            'Main-Class': 'soccerstar.Server'
+            'Main-Class': 'Server'
         )
     }
 }

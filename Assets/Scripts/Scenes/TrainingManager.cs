@@ -164,7 +164,7 @@ public class TrainingManager : MonoBehaviour
 
         NetworkManager.FetchTraining(PlayerManager.GetName());
         SetButtonsAndDescription();
-        NetworkManager.FetchTraits(PlayerManager.GetName());
+        NetworkManager.FetchStats(PlayerManager.GetName());
         NetworkManager.FetchEndurance(PlayerManager.GetName());
         
         UpdateEnduranceDisplay();
