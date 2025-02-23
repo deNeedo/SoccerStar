@@ -10,7 +10,7 @@ public class ItemManager : MonoBehaviour {
         for (int m = 0; m < 4; m++) {
             Item item = NetworkManager.GenerateClothing(PlayerManager.GetName(), m);
             SetClothing(item, m);
-            FindObjectOfType<ClothesManager>().UpdateShopItems();
+            FindAnyObjectByType<ClothesManager>().UpdateShopItems();
         }
     }
     public static void RefillFood() {

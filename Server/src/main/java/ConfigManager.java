@@ -15,7 +15,7 @@ public class ConfigManager {
     public static void getPreferences() {
         FileReader reader; FileWriter writer; StringBuilder data = new StringBuilder(); int m;
         try {
-            reader = new FileReader("./config.txt");
+            reader = new FileReader("./server.config");
             while ((m = reader.read()) != -1) {
                 data.append((char) m);
             }
@@ -25,7 +25,7 @@ public class ConfigManager {
             PORT = Integer.parseInt(temp.split(":")[1]);
         } catch (FileNotFoundException e1a) {
             try {
-                writer = new FileWriter("./config.txt");
+                writer = new FileWriter("./server.config");
                 writer.write("127.0.0.1:10001");
                 writer.close();
             } catch (IOException e1b) {

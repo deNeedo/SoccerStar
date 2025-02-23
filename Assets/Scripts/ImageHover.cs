@@ -70,9 +70,9 @@ public class ImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                         NetworkManager.FetchLockerItems(PlayerManager.GetName());
                         NetworkManager.FetchCash(PlayerManager.GetName());
                         NetworkManager.FetchClothes(PlayerManager.GetName());
-                        FindObjectOfType<LockerManager>().UpdateLockerUI(); 
-                        FindObjectOfType<CashDisplayManager>().UpdateCashDisplay();
-                        FindObjectOfType<ClothesManager>().UpdateShopItems();
+                        FindAnyObjectByType<LockerManager>().UpdateLockerUI(); 
+                        FindAnyObjectByType<CashDisplayManager>().UpdateCashDisplay();
+                        FindAnyObjectByType<ClothesManager>().UpdateShopItems();
 
                         Debug.Log("Purchased!");
                     } else {
